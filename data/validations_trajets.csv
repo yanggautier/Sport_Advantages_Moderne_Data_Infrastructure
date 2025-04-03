@@ -1,0 +1,162 @@
+id_salarie,adresse,mode_transport,distance_calculee,duree_calculee,est_valide,raison
+59019,"128 Rue du Port, 34000 Frontignan",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+19841,"68 Rue du Port, 34970 Saint-Clément-de-Rivière",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+56482,"100 Av. de la Gare, 30900 Nîmes",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+21886,"53 Av. de la Gare, 34970 Lattes",Marche/running,1628.0,1334.0,True,
+81001,"74 Rue des Fleurs, 34970 Lattes",Marche/running,377.0,313.0,True,
+17757,"Av. de La Mer, 34470 Pérols",Vélo/Trottinette/Autres,6306.0,1296.0,True,
+17036,"28 Rue du Port, 34140 Mèze",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+36913,"169 Rue Jean Jaures, 34730 Prades-le-Lez",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+79006,"44 Rue Jean Jaures, 34730 Prades-le-Lez",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+62296,"31 Av. Grassion Cibrand, 34130 Mauguio",Vélo/Trottinette/Autres,8131.0,1701.0,True,
+90284,"136 Rue des Grottes, 34130 Mauguio",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+83440,"38 Rue du Muscadet, 34090 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+18246,"181 Av. de la Gare, 34970 Lattes",Vélo/Trottinette/Autres,1537.0,302.0,True,
+33386,"24 Rue de la Cadoule, 34740 Vendargues",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+19773,"110 Rue de la République, 34000 Montpellier",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+70643,"1037 Val des Sources, 34090 Montpellier",Vélo/Trottinette/Autres,8176.0,1730.0,True,
+25701,"63 Rue du Marché, 34800 Clermont-l'Hérault",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+99514,"1 Rue Gerhardt, 34000 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+43124,"121 Bis Rue des Carignans, 34790 Grabels",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+56632,"70 Av. Jean Jaurès, 30900 Nîmes",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+28160,"38 Plan des Arbousiers, 34970 Lattes",Vélo/Trottinette/Autres,7446.0,1571.0,True,
+15493,"50 Boulevard de la Mer, 34880 La Grande-Motte",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+84233,"Av. de la Mer, Montpellier",Vélo/Trottinette/Autres,2413.0,565.0,True,
+17997,"9 Rue Four des Flammes, 34000 Montpellier",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+48589,"45 Rue de la République, 34000 Montpellier",Vélo/Trottinette/Autres,5464.0,1089.0,True,
+76341,"57 Av. de la Liberté, 34070 Montpellier",Vélo/Trottinette/Autres,6492.0,1336.0,True,
+89943,"40 Rue du Pradas, 34470 Pérols",Marche/running,3261.0,2728.0,True,
+46253,"32 Trav. de la Brigantine, 34970 Lattes",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+17376,"1932 Ham. de Rabejac, 34700 Le Puech",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+22426,"103 Av. de la Plage, 34450 Vias",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+34413,"367 Av. Marcel Pagnol, 34470 Pérols",Marche/running,3674.0,3085.0,True,
+44472,"94 Rue Jean Jaurès, 34740 Vendargues",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+97309,"51 Av. de La Mer, 34470 Pérols",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+39874,"87 Rue du Marché, 34400 Lunel",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+92736,"187 Chem. de la Draye du Marbre, 34170 Castelnau-le-Lez",Vélo/Trottinette/Autres,8806.0,1727.0,True,
+43015,"199-97 Av. du Pichagret, 34980 Saint-Gély-du-Fesc",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+71502,455 route de mendes 34000 Montpellier,Vélo/Trottinette/Autres,8149.0,1753.0,True,
+16872,"10 Av. Maréchal Leclerc, 34280 La Grande-Motte",Vélo/Trottinette/Autres,13558.0,2631.0,True,
+76771,"Pl. de la Liberté, 34430 Saint-Jean-de-Védas",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+50408,"118 Imp. des Vignes, 34470 Pérols",Marche/running,3404.0,2845.0,True,
+49804,"200 Rue du Stade, 34830 Clapiers",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+20083,"13 Bd de la Liberté, 34500 Béziers",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+37866,"4 Av. de la Paix, 34690 Fabrègues",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+71190,"68 Rue du N, 34920 Le Crès",Vélo/Trottinette/Autres,10801.0,2095.0,True,
+57202,"8 Rue Achille Bege, 34090 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+27620,"18 Rue des Vignes, 34970 Lattes",Vélo/Trottinette/Autres,2310.0,547.0,True,
+36981,"47 Av. de la Gare, 34970 Lattes",Marche/running,1628.0,1334.0,True,
+89328,"8 Rue de la Vieille, 34000 Montpellier",Vélo/Trottinette/Autres,5684.0,1123.0,True,
+50309,"76 Av. de la Plage, 34410 Sérignan",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+32690,"84 Rue du Port, 34470 Pérols",Vélo/Trottinette/Autres,6132.0,1267.0,True,
+43861,"87 Av. de la Plage, 34450 Vias",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+17027,"Pl. Jean Jaurès, 34000 Montpellier",Vélo/Trottinette/Autres,5701.0,1127.0,True,
+99401,"20 Av. de la Paix, 34690 Fabrègues",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+86847,"139 Av. des Pins, 34150 Gignac",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+58045,"112 Chem. des Pins, 34170 Castelnau-le-Lez",Vélo/Trottinette/Autres,8515.0,1658.0,True,
+53673,"129 Av. de la Liberté, 34070 Montpellier",Vélo/Trottinette/Autres,7457.0,1467.0,True,
+13064,"3 Rue de la République, 34770 Gigean",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+18918,"21 Av. du Port, 34540 Balaruc-les-Bains",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+51328,"22 Rue de la Paix, 34130 Mauguio",Vélo/Trottinette/Autres,11693.0,2293.0,True,
+86633,"140 All. des Vignes, 34280 La Grande-Motte",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+29200,"21 All. Martine Carol, 34070 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+43542,"18 Rue des Arbousiers, 34230 Bélarga",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+64886,"4 Pl. des Écoles, 34970 Lattes",Marche/running,249.0,199.0,True,
+45140,"84 Rue des Écoles, 34980 Saint-Clément-de-Rivière",Vélo/Trottinette/Autres,16087.0,3187.0,True,
+44927,"143 Rue des Sansouïres, 34970 Lattes",Vélo/Trottinette/Autres,7777.0,1654.0,True,
+79837,"11 Lot. Mas de Combes, 34230 Popian",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+76903,"260 Chem. du Pompage, 34800 Canet",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+30351,"21 Rue de la Liberté, 34700 Soumont",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+20697,"12 Rue William et Catherine Booth, 34070 Montpellier",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+37830,"18 Rue des Agapanthes, 34470 Pérols",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+34678,"32 Av. Jean - Louis Etienne, 34740 Vendargues",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+54625,"26 Bd de la Liberté, 34830 Clapiers",Vélo/Trottinette/Autres,9710.0,1943.0,True,
+70575,"138 Rue de la République, 30600 Vauvert",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+66882,"3 Rue Tadorne, 34140 Mèze",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+35719,"81 Av. du Général Leclerc, 34470 Pérols",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+28529,"100 Bd Victor Hugo, 34000 Montpellier",Vélo/Trottinette/Autres,5504.0,1115.0,True,
+60358,"15 Rue de la République, 34000 Montpellier",Vélo/Trottinette/Autres,5485.0,1092.0,True,
+50504,"10 Rue du Marché aux Raisins, 34750 Villeneuve-lès-Maguelone",Vélo/Trottinette/Autres,11927.0,2350.0,True,
+56530,"124 Rue des Écoles, 34540 Balaruc-les-Bains",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+45221,"215 Rue Alphonse Allais, 34070 Montpellier",Vélo/Trottinette/Autres,6713.0,1509.0,True,
+86948,"85 Av. de la Paix, 34690 Fabrègues",Vélo/Trottinette/Autres,19798.0,3905.0,True,
+34899,"Pl. de la Liberté, 34470 Pérols",Marche/running,3921.0,3289.0,True,
+36827,"Pl. du Marché, 34250 Palavas-les-Flots",Vélo/Trottinette/Autres,11595.0,2205.0,True,
+66425,"111 Rue du Ctre, 34160 Saint-Drézéry",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+77789,"176 Bd de la Liberté, 34830 Clapiers",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+46158,"44 Av. de la Paix, 34690 Fabrègues",Vélo/Trottinette/Autres,19807.0,3907.0,True,
+34382,"151 Bd Victor Hugo, 34000 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+60141,"17 Rue du Ctre, 34160 Saint-Drézéry",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+68454,"121 Rue du Marché, 34800 Clermont-l'Hérault",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+45725,"28 Rue Anatole France, 34120 Pézenas",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+67121,"Bd des Sports, 34000 Montpellier",Vélo/Trottinette/Autres,5267.0,1006.0,True,
+76076,"141 Rue de la Plage, 34130 Mauguio",Vélo/Trottinette/Autres,7762.0,1634.0,True,
+60437,"328 All. de l'Iliade, 34280 La Grande-Motte",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+33872,"162 Av. de la Paix, 34290 Montblanc",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+23842,"79 Rue des Écoles, 34920 Le Crès",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+66386,"189 Pl. des Écoles, 34970 Lattes",Marche/running,276.0,230.0,True,
+75791,"Rue des Écoles, 34120 Lézignan-la-Cèbe",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+55153,"178 Rue de la Lucques, 34150 Aniane",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+91916,"72 Rue des Pins, 34470 Pérols",Vélo/Trottinette/Autres,3862.0,822.0,True,
+50316,"36 Bis Rue Paul Verlaine, 34130 Mauguio",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+49419,"13 Bd des Sports, 34000 Montpellier",Vélo/Trottinette/Autres,5331.0,1017.0,True,
+30945,"90 Av. de la Liberté, 34070 Montpellier",Vélo/Trottinette/Autres,7324.0,1450.0,True,
+29793,"121 Bd des Sports, 34000 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+41293,"6 Rue des Bougainvilliers, 34970 Lattes",Vélo/Trottinette/Autres,3030.0,754.0,True,
+96902,"19 Rue de l'Église, 34250 Palavas-les-Flots",Vélo/Trottinette/Autres,11480.0,2185.0,True,
+42472,"103 Rue Joseph Guerre, 34070 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+69938,"7 Rue Alphonse Daudet, 34470 Pérols",Vélo/Trottinette/Autres,3147.0,659.0,True,
+70933,"13 Rue du Marché, 34560 Montbazin",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+46903,"57 Av. des Pins, 34130 Valergues",Vélo/Trottinette/Autres,16267.0,3075.0,True,
+93699,"103 All. des Pins, 34170 Castelnau-le-Lez",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+78962,"20 Rue de la Petite Calade, 34660 Cournonterral",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+90813,"88 Av. de la Liberté, 34070 Montpellier",Vélo/Trottinette/Autres,7324.0,1450.0,True,
+31222,"1 Rue du Stade, 34820 Teyran",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+12497,"Rue du N, 34920 Le Crès",Vélo/Trottinette/Autres,10827.0,2098.0,True,
+90207,"Av. de la Gare, 34540 Balaruc-les-Bains",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+48260,"Rue Rosset, 34000 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+46304,"50 Rue du Port, 34280 La Grande-Motte",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+73367,"485 Anc. Chem. du Moulin, 34270 Les Matelles",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+42328,"97 Rte de la Mer, 34400 Lunel",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+59804,"13 Bis Rue des Anémones, 34000 Montpellier",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+84603,"222 Rue Georges Bizet, 34130 Mauguio",Vélo/Trottinette/Autres,9027.0,1804.0,True,
+57589,"75 Rue des Écoles, 34980 Saint-Clément-de-Rivière",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+92368,"Pl. de la Liberté, 34470 Pérols",Vélo/Trottinette/Autres,4307.0,872.0,True,
+20157,"6 Pl. de la République, 34700 Lodève",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+49571,"40 Rue Jean Jaurès, 34590 Marsillargues",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+41377,"Rue du Ctre, 34160 Saint-Drézéry",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+22092,"77 Bd des Écoles, 34750 Villeneuve-lès-Maguelone",Vélo/Trottinette/Autres,11785.0,2288.0,True,
+20377,"140 Rue du Stade, 30920 Codognan",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+29456,"2 Rue Palladio, 34970 Lattes",Vélo/Trottinette/Autres,3436.0,712.0,True,
+88193,"194 Rue des Amours d'Antan, 34980 Saint-Gély-du-Fesc",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+60948,"40 Pl. des Écoles, 34970 Lattes",Marche/running,276.0,230.0,True,
+92440,"369 Chem. du Thym, 34170 Castelnau-le-Lez",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+86486,"3 All. des Cévennes, 34630 Saint-Thibéry",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+56263,"246 Rue du Boulidou, 34980 Saint-Clément-de-Rivière",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+59040,"9 Rue du Lierre, 34850 Pinet",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+29450,"36 Rue de la Condamine, 34970 Lattes",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+74171,"49 Pl. du Marché, 34250 Palavas-les-Flots",Vélo/Trottinette/Autres,11595.0,2205.0,True,
+31453,"6 Av. des Pins, 34570 Montarnaud",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+53944,"58 Bd Ernest Renan, 34000 Montpellier",Vélo/Trottinette/Autres,5101.0,984.0,True,
+27483,"Rue du Ctre, 34160 Saint-Drézéry",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+48154,"Rue des Vignes, 34070 Montpellier",Vélo/Trottinette/Autres,6631.0,1504.0,True,
+79919,"229 Rue Albert Camus, 34660 Cournonterral",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+71657,"17 Av. de la Gare, 34770 Gigean",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+34922,"61 Rue Jean Jaurès, 34200 Sète",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+42234,"5 Rue des Ecoles, 34830 Clapiers",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+96558,"179 Chem. de la Rocheuse, 34170 Castelnau-le-Lez",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+86692,"90 Av. de la Plage, 34450 Vias",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+50866,"16 Rue des Roses, 34970 Lattes",Marche/running,3317.0,2777.0,True,
+35731,"46 Rue des Écoles, 34470 Pérols",Vélo/Trottinette/Autres,4395.0,884.0,True,
+51866,"30 Rue des Vignes, 34970 Lattes",Marche/running,2315.0,1944.0,True,
+19260,"1 Rue de la Paix, 34130 Saint-Aunès",Transports en commun,,,False,Mode de transport 'Transports en commun' non sportif
+82858,"125 Rue du Port, 34280 La Grande-Motte",Vélo/Trottinette/Autres,17111.0,3330.0,True,
+50955,"99 Rue du N, 34920 Le Crès",Vélo/Trottinette/Autres,10793.0,2094.0,True,
+43965,"100 Av. de la Gare, 34970 Lattes",Marche/running,1628.0,1334.0,True,
+42960,"17 Rue Maguelone, 34250 Palavas-les-Flots",Vélo/Trottinette/Autres,11243.0,2150.0,True,
+13780,"56 Imp. Robespierre, 34130 Mauguio",Vélo/Trottinette/Autres,9772.0,1964.0,True,
+18941,"68 Bd des Écoles, 34750 Villeneuve-lès-Maguelone",Vélo/Trottinette/Autres,11789.0,2288.0,True,
+81676,"27 Av. du Général Leclerc, 34470 Pérols",Marche/running,4124.0,3459.0,True,
+27069,"59 Chem. des Pins, 34170 Castelnau-le-Lez",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+30256,"2 Rue du Nord, 34920 Le Crès",véhicule thermique/électrique,,,False,Mode de transport 'véhicule thermique/électrique' non sportif
+94680,"5 Av. de la Liberté, 34070 Montpellier",Vélo/Trottinette/Autres,5733.0,1206.0,True,

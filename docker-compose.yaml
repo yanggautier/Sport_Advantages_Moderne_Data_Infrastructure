@@ -1,0 +1,237 @@
+version: '3.8'
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.6.3
+  environment:
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
+    - AIRFLOW__CORE__FERNET_KEY=FB0o_zt4e3Ziq4jTzPNJXLiVr3AgK7JQUEzY_LgG0A4=
+    - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+    - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+    - AIRFLOW_CONN_SPORT_ADVANTAGES_DB=postgresql://sportadvantages:sportpassword@postgres:5432/sportadvantages
+    - AIRFLOW_CONN_REDPANDA=kafka://redpanda:9092
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+    - ./airflow/config:/opt/airflow/config
+  depends_on:
+    - postgres-airflow
+  networks:
+    - sport_network
+
+services:
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:14
+    container_name: sport-advantages-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sport_network
+
+  # Redpanda - Alternative à Kafka pour le streaming de données
+  redpanda:
+    image: redpandadata/redpanda:latest
+    container_name: sport-advantages-redpanda
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=1G
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --node-id=0
+      - --check=false
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:9092,OUTSIDE://localhost:19092
+      - --rpc-addr 0.0.0.0:33145
+      - --advertise-rpc-addr redpanda:33145
+    ports:
+      - "9092:9092"
+      - "19092:19092"
+    networks:
+      - sport_network
+
+  # Redpanda Console - Interface UI pour Redpanda
+  redpanda-console:
+    image: redpandadata/console:latest
+    container_name: sport-advantages-redpanda-console
+    depends_on:
+      - redpanda
+    ports:
+      - "8080:8080"
+    environment:
+      - REDPANDA_BROKERS=redpanda:9092
+    networks:
+      - sport_network
+
+  # Debezium - Pour capturer les changements de la base de données (CDC)
+  debezium:
+    image: debezium/connect:latest
+    container_name: sport-advantages-debezium
+    depends_on:
+      - postgres
+      - redpanda
+    ports:
+      - "8083:8083"
+    environment:
+      - BOOTSTRAP_SERVERS=redpanda:9092
+      - GROUP_ID=sport-advantages-group
+      - CONFIG_STORAGE_TOPIC=sport_connect_configs
+      - OFFSET_STORAGE_TOPIC=sport_connect_offsets
+      - STATUS_STORAGE_TOPIC=sport_connect_statuses
+    networks:
+      - sport_network
+
+  # Service Python pour générer les données et les insérer dans PostgreSQL
+  data-generator:
+    build:
+      context: ./data-generator
+      dockerfile: Dockerfile
+    container_name: sport-advantages-data-generator
+    depends_on:
+      - postgres
+    volumes:
+      - ./data-generator:/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+    networks:
+      - sport_network
+
+  # Service Python pour lire le topic Redpanda et envoyer des notifications Slack
+  slack-notifier:
+    build:
+      context: ./slack-notifier
+      dockerfile: Dockerfile
+    container_name: sport-advantages-slack-notifier
+    depends_on:
+      - redpanda
+    volumes:
+      - ./slack-notifier:/app
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=redpanda:9092
+      - SLACK_WEBHOOK_URL=your_slack_webhook_url
+    networks:
+      - sport_network
+
+  # Service Spark pour le traitement des données
+  spark:
+    image: docker.io/bitnami/spark:3.3
+    container_name: sport-advantages-spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - "8090:8080"
+      - "7077:7077"
+    networks:
+      - sport_network
+
+  # Spark Worker
+  spark-worker:
+    image: docker.io/bitnami/spark:3.3
+    container_name: sport-advantages-spark-worker
+    depends_on:
+      - spark
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    networks:
+      - sport_network
+
+  # Minio comme stockage compatible S3 pour Delta Lake
+  minio:
+    image: minio/minio
+    container_name: sport-advantages-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - sport_network
+
+# Airflow Webserver
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: sport-advantages-airflow-webserver
+    command: webserver
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Airflow Scheduler
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: sport-advantages-airflow-scheduler
+    command: scheduler
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Airflow Init (initialise la base de données et crée le premier utilisateur)
+  airflow-init:
+    <<: *airflow-common
+    container_name: sport-advantages-airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        if [[ -z "$(ls -A /opt/airflow/logs)" ]]; then
+          mkdir -p /opt/airflow/logs
+        fi
+        airflow db init
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com
+    restart: on-failure
+
+volumes:
+  postgres_data:
+  postgres_airflow_data:
+  minio_data:
+
+networks:
+  sport_network:
+    driver: bridge
