@@ -1,4 +1,6 @@
-import psycopg2def connection_db():
+import psycopg2def 
+
+def connection_db():
     pass
 def generaton_sport():
     pass
