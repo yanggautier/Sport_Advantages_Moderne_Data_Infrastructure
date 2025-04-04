@@ -13,9 +13,12 @@ CREATE TABLE sport_advantages.employees(
     birthday DATE,
     business_unity VARCHAR(20),
     hire_date DATE,
-    gross_salary SMALLINT,
+    gross_salary INT,
     constract_type VARCHAR(5),
-    paid_leaved_days SMALLINT
+    address VARCHAR(255),
+    transport_mode VARCHAR(100),
+    paid_leaved_days INT
+
 );
 
 -- Table pour stocker les validations de distance
@@ -24,7 +27,7 @@ CREATE TABLE sport_advantages.commute_validations(
     id_employee INT NOT NULL,
     calculed_distance NUMERIC(10, 2),
     calculed_duration NUMERIC(10, 2),
-    is_validate BOOLEAN,
+    is_valid BOOLEAN,
     error_message TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_employee) REFERENCES sport_advantages.employees(id_employee)
