@@ -2,7 +2,7 @@ import requests
 import os
 import time
 import pandas as pd
-from typing import List
+from typing import List, Tuple
 from sql_scripts import get_table_count, table_bulk_insert, get_table_elements
 
 # Clé API API Distance Matrix(à définir dans votre fichier .env)
@@ -17,7 +17,7 @@ TRANSPORT_LIMITS = {
     "Vélo/Trottinette/Autres": 25000  # 25 km en mètres
 }
 
-def get_distance(origin:str, destination:str, mode:str="walking") ->:
+def get_distance(origin:str, destination:str, mode:str="walking") -> Tuple[float, float]:
     """
     Calcule la distance entre deux adresses en utilisant l'API Google Maps
     
@@ -218,14 +218,14 @@ def insert_employee(rh_file_path:str, host:str, database:str, user:str, password
 if __name__ == "__main__":
 
     # Récupérer les variables d'environnement dans des variables locals
-    DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
-    DB_NAME = os.getenv("POSTGRES_DB")
-    DB_USER = os.getenv("POSTGRES_USER")
-    DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-    DB_PORT = os.getenv("POSTGRES_PORT", "5432")
+    DB_HOST = os.getenv("DB_HOST", "localhost")
+    DB_NAME = os.getenv("DB_NAME")
+    DB_USER = os.getenv("DB_USER")
+    DB_PASSWORD = os.getenv("DB_PASSWORD")
+    DB_PORT = os.getenv("DB_PORT", "5432")
     
     # Vérifier que les variables requises sont définies
-    required_vars = ["POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "GOOGLE_MAPS_API_KEY"]
+    required_vars = ["DB_NAME", "DB_USER", "DB_PASSWORD", "GOOGLE_MAPS_API_KEY"]
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     
     if missing_vars:
@@ -239,12 +239,12 @@ if __name__ == "__main__":
     if number_employees == 0:
         rh_file_path = "data/Données+RH.xlsx"
         print(f"Aucun employé trouvé. Insertion des données depuis {rh_file_path}")
-        insert_employee(rh_file_path, host, database, user, password, port)
+        insert_employee(rh_file_path, DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
 
     # Requête pour récupérer s'il y a des données dans la table de validation
-    number_validations = get_table_count("sport_advantages.commute_validations", host, database, user, password, port)
+    number_validations = get_table_count("sport_advantages.commute_validations", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
  
     # S'il n'y a pas données de validation on récupère les données des employées puis valider et mettre dans la bdd
     if number_validations == 0:
         print("Aucune validation trouvée. Exécution du processus de validation.")
-        insert_validation_to_db(host, database, user, password, port)
+        insert_validation_to_db(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
