@@ -4,12 +4,12 @@ x-airflow-common: &airflow-common
   image: apache/airflow:2.6.3
   environment:
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
     - AIRFLOW__CORE__FERNET_KEY=FB0o_zt4e3Ziq4jTzPNJXLiVr3AgK7JQUEzY_LgG0A4=
     - AIRFLOW__CORE__LOAD_EXAMPLES=false
     - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
     - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
-    - AIRFLOW_CONN_SPORT_ADVANTAGES_DB=postgresql://sportadvantages:sportpassword@postgres:5432/sportadvantages
+    - AIRFLOW_CONN_SPORT_ADVANTAGES_DB=postgresql://${SPORT_POSTGRES_USER}:${SPORT_POSTGRES_PASSWORD}@business-postgres:${SPORT_POSTGRES_PORT}/${SPORT_POSTGRES_DB}
     - AIRFLOW_CONN_REDPANDA=kafka://redpanda:9092
   volumes:
     - ./airflow/dags:/opt/airflow/dags
@@ -17,26 +17,41 @@ x-airflow-common: &airflow-common
     - ./airflow/plugins:/opt/airflow/plugins
     - ./airflow/config:/opt/airflow/config
   depends_on:
-    - postgres-airflow
+    - airflow-postgres
   networks:
     - sport_network
 
 services:
+  airflow-postgres:
+    image: postgres:14
+    container_name: sport-advantages-airflow-postgres
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - airflow_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${AIRFLOW_POSTGRES_PORT}:5432"
+    networks:
+      - sport_network
+
   # Base de données PostgreSQL
-  postgres:
+  business-postgres:
     image: postgres:14
     container_name: sport-advantages-postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${SPORT_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${SPORT_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${SPORT_POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "${SPORT_POSTGRES_PORT}:${SPORT_POSTGRES_INTERNAL_PORT}"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - business_postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
+      - ./postgres-config/postgresql.conf:/etc/postgresql/postgresql.conf
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${SPORT_POSTGRES_USER} -d ${SPORT_POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -63,6 +78,17 @@ services:
     ports:
       - "9092:9092"
       - "19092:19092"
+    volumes:
+      - redpanda:/var/lib/redpanda/data
+    depends_on:
+      business-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
     networks:
       - sport_network
 
@@ -71,47 +97,79 @@ services:
     image: redpandadata/console:latest
     container_name: sport-advantages-redpanda-console
     depends_on:
-      - redpanda
+      redpanda:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      - REDPANDA_BROKERS=redpanda:9092
+      - KAFKA_BROKERS=redpanda:9092
     networks:
       - sport_network
 
   # Debezium - Pour capturer les changements de la base de données (CDC)
   debezium:
-    image: debezium/connect:latest
+    image: debezium/connect:2.4
     container_name: sport-advantages-debezium
     depends_on:
-      - postgres
-      - redpanda
+      business-postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
     ports:
       - "8083:8083"
     environment:
       - BOOTSTRAP_SERVERS=redpanda:9092
-      - GROUP_ID=sport-advantages-group
-      - CONFIG_STORAGE_TOPIC=sport_connect_configs
-      - OFFSET_STORAGE_TOPIC=sport_connect_offsets
-      - STATUS_STORAGE_TOPIC=sport_connect_statuses
+      - GROUP_ID=${DEBEZIUM_GROUP_ID}
+      - CONFIG_STORAGE_TOPIC=${DEBEZIUM_CONFIG_STORAGE_TOPIC}
+      - OFFSET_STORAGE_TOPIC=${DEBEZIUM_OFFSET_STORAGE_TOPIC}
+      - STATUS_STORAGE_TOPIC=${DEBEZIUM_STATUS_STORAGE_TOPIC}
+    healthcheck: 
+      test: ["CMD-SHELL", "curl -s -f http://localhost:8083/connectors > /dev/null || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    command: >
+      sh -c "
+        /docker-entrypoint.sh start &
+        until curl -X POST http://localhost:8083/connectors -H 'Content-Type: application/json' -d '{
+          \"name\": \"sport-advantages-postgres-connector\",
+          \"config\": {
+            \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",
+            \"database.hostname\": \"business-postgres\",
+            \"database.port\": \"${SPORT_POSTGRES_PORT}\",
+            \"database.user\": \"${SPORT_POSTGRES_USER}\",
+            \"database.password\": \"${SPORT_POSTGRES_PASSWORD}\",
+            \"database.dbname\": \"${SPORT_POSTGRES_DB}\",
+            \"database.server.name\": \"sport-advantages\",
+            \"table.include.list\": \"sport_advantages.sport_activities\",
+            \"plugin.name\": \"pgoutput\",
+            \"topic.prefix\" : \"sport\",
+            \"snapshot.mode\": \"initial\"
+          }
+        }'; do
+          sleep 2
+        done &&
+        tail -f /dev/null"
     networks:
       - sport_network
 
-  init_db_commute_validation:
+  init-db-commute-validation:
     build:
       context: ./commute_validation
       dockerfile: Dockerfile
-    container_name: sport-advantages-init_db
+    container_name: sport-advantages-init-db
     depends_on:
-      - postgres
+      business-postgres:
+        condition: service_healthy
+
     volumes:
-      - ./data-generator:/app
+      - ./commute_validation:/app
     environment:
-      - DB_HOST=${POSTGRES_HOST}
-      - DB_PORT=${POSTGRES_PORT}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_NAME=${POSTGRES_DB}
+      - DB_HOST=${SPORT_POSTGRES_HOST}
+      - DB_USER=${SPORT_POSTGRES_USER}
+      - DB_PASSWORD=${SPORT_POSTGRES_PASSWORD}
+      - DB_NAME=${SPORT_POSTGRES_DB}
+      - DB_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
     networks:
       - sport_network
@@ -119,85 +177,22 @@ services:
   # Service Python pour générer les données et les insérer dans PostgreSQL
   data-generator:
     build:
-      context: ./activity-generator
+      context: ./activity_generator
       dockerfile: Dockerfile
     container_name: sport-advantages-data-generator
     depends_on:
-      - init_db_commute_validation
+      init-db-commute-validation:
+        condition: service_completed_successfully
+      debezium:
+        condition: service_healthy
     volumes:
-      - ./activity-generator:/app
+      - ./activity_generator:/app
     environment:
-      - DB_HOST=${POSTGRES_HOST}
-      - DB_PORT=${POSTGRES_PORT}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_NAME=${POSTGRES_DB}
-    networks:
-      - sport_network
-
-  # Service Python pour lire le topic Redpanda et envoyer des notifications Slack
-  slack-notifier:
-    build:
-      context: ./slack-notifier
-      dockerfile: Dockerfile
-    container_name: sport-advantages-slack-notifier
-    depends_on:
-      - redpanda
-    volumes:
-      - ./slack-notifier:/app
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=redpanda:9092
-      - SLACK_WEBHOOK_URL=your_slack_webhook_url
-    networks:
-      - sport_network
-
-  # Service Spark pour le traitement des données
-  spark:
-    image: docker.io/bitnami/spark:3.3
-    container_name: sport-advantages-spark
-    environment:
-      - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-    ports:
-      - "8090:8080"
-      - "7077:7077"
-    networks:
-      - sport_network
-
-  # Spark Worker
-  spark-worker:
-    image: docker.io/bitnami/spark:3.3
-    container_name: sport-advantages-spark-worker
-    depends_on:
-      - spark
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-    networks:
-      - sport_network
-
-  # Minio comme stockage compatible S3 pour Delta Lake
-  minio:
-    image: minio/minio
-    container_name: sport-advantages-minio
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-    command: server /data --console-address ":9001"
-    volumes:
-      - minio_data:/data
+      - DB_HOST=${SPORT_POSTGRES_HOST}
+      - DB_USER=${SPORT_POSTGRES_USER}
+      - DB_PASSWORD=${SPORT_POSTGRES_PASSWORD}
+      - DB_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
+      - DB_NAME=${SPORT_POSTGRES_DB}
     networks:
       - sport_network
 
@@ -206,6 +201,8 @@ services:
     <<: *airflow-common
     container_name: sport-advantages-airflow-webserver
     command: webserver
+    depends_on:
+      - airflow-postgres
     ports:
       - "8081:8080"
     healthcheck:
@@ -213,6 +210,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - sport_network
 
   # Airflow Scheduler
   airflow-scheduler:
@@ -224,6 +223,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - sport_network
 
   # Airflow Init (initialise la base de données et crée le premier utilisateur)
   airflow-init:
@@ -245,11 +246,14 @@ services:
           --role Admin \
           --email admin@example.com
     restart: on-failure
+    networks:
+      - sport_network
 
 volumes:
-  postgres_data:
-  postgres_airflow_data:
+  business_postgres_data:
+  airflow_postgres_data:
   minio_data:
+  redpanda:
 
 networks:
   sport_network:

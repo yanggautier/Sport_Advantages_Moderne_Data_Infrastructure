@@ -2,21 +2,24 @@ import os
 import random
 from datetime import datetime, timedelta
 from typing import Optional, List
-from sql_manipulation import get_employee_ids, bulk_insert_sport_activities
-from dotenv import load_dotenv
+from sql_manipulation import get_employee_ids, bulk_insert_sport_activities, get_activitis_nb
+import logging
 
-load_dotenv()
+logger = logging.getLogger(__name__)
 
-DB_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
-DB_PORT = os.environ.get('POSTGRES_PORT', '5432')
-DB_USER = os.environ.get('POSTGRES_USER')
-DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
-DB_NAME = os.environ.get('POSTGRES_DB')
+
+DB_HOST = os.environ.get('DB_HOST', 'localhost')
+DB_PORT = os.environ.get('DB_PORT', '5432')
+DB_USER = os.environ.get('DB_USER')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
+DB_NAME = os.environ.get('DB_NAME')
 
 
 SPORT_TYPES = [
     "Course à pied", "Marche", "Vélo", "Natation", "Randonnée", "Trottinette",
-    "Escalade", "Tennis", "Yoga", "Musculation", "Corde à sauter","Badminton"
+    "Escalade", "Tennis", "Yoga", "Musculation", "Corde à sauter","Badminton", 
+    "Tennis de table", "Triathlon", "Équitation", "Voile", "Football", 
+    "Basketball", "Judo", "Box", "Rugby"
 ]
 
 
@@ -148,55 +151,75 @@ def sport_activity_generator() -> List[dict]:
     start_day = today - timedelta(days=366)
     end_day = today - timedelta(days=1)
 
+    logger.info(f"Date de début {start_day.strftime('%d/%m/%Y %H:%M:%S')}")
+    logger.info(f"Date de fin {end_day.strftime('%d/%m/%Y %H:%M:%S')}")
+
     # Récupérer la liste des id des salariés dans la base de données
     id_list = get_employee_ids(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
-    
+    ids_nb = len(id_list)
+
+    if ids_nb:
+        logger.info(f'{len(id_list)} salariés trouvés dans la base de données.')
+    else:
+        logger.error('Aucun salarié trouvé dans la base de données.')
+
     current_date = start_day
 
-    # Itérer les dates entre start_day et end_day
-    while current_date < end_day:
-        
-        for id_employee in id_list:
-
-            # Cela donne un décimal aléatoire entre 0 et 1
-            activity_random_score = random.random()
-
-            # Si c'est un jour de weekend on a plusieur de temps donc plus de chance
-            if (start_day.weekday() in (5, 6) and activity_random_score > 0.85) or activity_random_score > 0.95:
-                sport_type = random.choice(SPORT_TYPES)
-            else:
-                sport_type = None
-
-            # Calculer la distance en fonction de type de sport
-            distance = get_distance(sport_type)
-
-            # Durée en fonction du type de sport et de la distance
-            duration = get_duration(sport_type, distance)
+    if ids_nb:
+        # Itérer les dates entre start_day et end_day s'il y a des salariés
+        while current_date < end_day:
             
-            # Générer la date et horaire du sport
-            start_time = get_activity_time(current_date)
+            for id_employee in id_list:
 
-            # Si le type de sport est bien dans la liste des sport, on ajoute les informations de l'activité dans la liste
-            if sport_type:
-                sport_list.append((
-                    id_employee,  
-                    start_time.strftime('%Y-%m-%d %H:%M:%S'),
-                    sport_type, 
-                    distance,
-                    duration,
-                    random.choice(COMMENTS)
-                ))
-            
-        # Pour la prochaine itération current_date est le jour suivant
-        current_date = current_date + timedelta(days=1)
+                # Cela donne un décimal aléatoire entre 0 et 1
+                activity_random_score = random.random()
+
+                # Si c'est un jour de weekend on a plusieur de temps donc plus de chance
+                if (start_day.weekday() in (5, 6) and activity_random_score > 0.85) or activity_random_score > 0.95:
+                    sport_type = random.choice(SPORT_TYPES)
+                else:
+                    sport_type = None
+
+                # Calculer la distance en fonction de type de sport
+                distance = get_distance(sport_type)
+
+                # Durée en fonction du type de sport et de la distance
+                duration = get_duration(sport_type, distance)
+                
+                # Générer la date et horaire du sport
+                start_time = get_activity_time(current_date)
+
+                # Si le type de sport est bien dans la liste des sport, on ajoute les informations de l'activité dans la liste
+                if sport_type:
+                    sport_list.append((
+                        id_employee,  
+                        start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        sport_type, 
+                        distance,
+                        duration,
+                        random.choice(COMMENTS)
+                    ))
+                
+            # Pour la prochaine itération current_date est le jour suivant
+            current_date = current_date + timedelta(days=1)
 
     return sport_list
 
 
 if  __name__ == "__main__":
 
-    # Générer une liste d'activité sport
-    sport_list = sport_activity_generator()
+    # Compter le nombre historique d'activité des salariés
+    activities_nb = get_activitis_nb(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
+    
+    # S'il n'y aucune, on génère, pour chaque fois qu'on rédémarre Docker, qu'il ne génère pas à nouveau
+    if activities_nb == 0:
 
-    # Insérer ces information dans la table d'activé de sport dans bdd
-    bulk_insert_sport_activities(list_data=sport_list, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
+        # Générer une liste d'activité sport
+        sport_list = sport_activity_generator()
+
+        # Insérer ces information dans la table d'activé de sport dans bdd
+        bulk_insert_sport_activities(list_data=sport_list, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
+        
+        logging.info(f"{len(sport_list)} activités sportives a été ajouté !")
+    else:
+        logging.warning("Des historiques d'activité sportive existent déjà !")

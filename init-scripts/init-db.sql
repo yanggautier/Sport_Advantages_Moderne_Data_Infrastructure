@@ -3,7 +3,7 @@
 CREATE SCHEMA IF NOT EXISTS sport_advantages;
 
 -- Configuration des autorisations
-ALTER SCHEMA sport_advantages OWNER TO sportadvantages;
+ALTER SCHEMA sport_advantages OWNER TO sportadvantagehr;
 
 -- Table des employés
 CREATE TABLE sport_advantages.employees(
@@ -60,9 +60,6 @@ CREATE TABLE IF NOT EXISTS sport_advantages.sport_advantages (
 );
 
 ---------------------------- Configuration pour Debezium ----------------------------------
--- Activer l'extension pour la réplication logique (nécessaire pour Debezium)
-ALTER SYSTEM SET wal_level='logical'
-
 -- Création de la table de publication pour Debezium
 CREATE PUBLICATION sport_advantages_publication FOR TABLE sport_advantages.sport_activities;
 
