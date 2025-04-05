@@ -18,7 +18,6 @@ CREATE TABLE sport_advantages.employees(
     address VARCHAR(255),
     transport_mode VARCHAR(100),
     paid_leaved_days INT
-
 );
 
 -- Table pour stocker les validations de distance
@@ -39,11 +38,9 @@ CREATE TABLE sport_advantages.sport_activities(
     id_employee INT NOT NULL,
     start_datetime TIMESTAMP,
     sport_type VARCHAR(20),
-    distance SMALLINT, 
-    activity_duration SMALLINT,
-    Commentaire VARCHAR(255),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    distance INT, 
+    activity_duration INT,
+    comment VARCHAR(255),
     FOREIGN KEY (id_employee) REFERENCES sport_advantages.employees(id_employee)
 );
 
@@ -76,6 +73,7 @@ GRANT ALL PRIVILEGES ON SCHEMA sport_advantages TO sportadvantagehr;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA sport_advantages TO sportadvantagehr;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA sport_advantages TO sportadvantagehr;
 
+
 -- Créer un rôle en lecture seule pour les rapports
 CREATE ROLE reporting;
 GRANT CONNECT ON DATABASE sportadvantages TO reporting;
@@ -95,6 +93,7 @@ SELECT
     ELSE gross_salary 
     END AS gross_salary
 FROM sport_advantages.employees;
+
 
 -- Donner accès uniquement à la vue pour powerbi_user
 GRANT SELECT ON sport_advantages.employees_masked TO sportadvantagebiuser;
