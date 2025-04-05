@@ -97,19 +97,38 @@ services:
     networks:
       - sport_network
 
-  # Service Python pour générer les données et les insérer dans PostgreSQL
-  data-generator:
+  init_db_commute_validation:
     build:
-      context: ./data-generator
+      context: ./commute_validation
       dockerfile: Dockerfile
-    container_name: sport-advantages-data-generator
+    container_name: sport-advantages-init_db
     depends_on:
       - postgres
     volumes:
       - ./data-generator:/app
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+    networks:
+      - sport_network
+
+  # Service Python pour générer les données et les insérer dans PostgreSQL
+  data-generator:
+    build:
+      context: ./activity-generator
+      dockerfile: Dockerfile
+    container_name: sport-advantages-data-generator
+    depends_on:
+      - init_db_commute_validation
+    volumes:
+      - ./activity-generator:/app
+    environment:
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
       - DB_USER=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}

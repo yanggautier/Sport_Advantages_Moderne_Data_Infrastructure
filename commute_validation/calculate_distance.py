@@ -1,14 +1,11 @@
 import requests
 import os
-from dotenv import load_dotenv
 import time
-from datetime import datetime
 import pandas as pd
+from typing import List
 from sql_scripts import get_table_count, table_bulk_insert, get_table_elements
 
-
 # Clé API API Distance Matrix(à définir dans votre fichier .env)
-load_dotenv()  # Chargement des variables d'environnement
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
 
 # Adresse de l'entreprise
@@ -20,7 +17,7 @@ TRANSPORT_LIMITS = {
     "Vélo/Trottinette/Autres": 25000  # 25 km en mètres
 }
 
-def get_distance(origin, destination, mode="walking"):
+def get_distance(origin:str, destination:str, mode:str="walking") ->:
     """
     Calcule la distance entre deux adresses en utilisant l'API Google Maps
     
@@ -63,7 +60,7 @@ def get_distance(origin, destination, mode="walking"):
     
     
 
-def validate_commutes(employees_df):
+def validate_commutes(employees_df) -> List[dict]:
     """
     Valide les déclarations de mode de transport des employés
     
@@ -72,7 +69,7 @@ def validate_commutes(employees_df):
                                     (doit contenir les colonnes 'id_employee', 'address', 'transport_mode')
         
     Returns:
-        list: Liste contenant les validations et les distances calculées
+        list (List(dict)): Liste contenant les validations et les distances calculées
     """
     results = []
     
@@ -164,7 +161,7 @@ def insert_validation_to_db(host, database, user, password, port):
     else:
         print("Aucune validation à insérer")
 
-def insert_employee(rh_file_path, host, database, user, password, port):
+def insert_employee(rh_file_path:str, host:str, database:str, user:str, password:str, port:str):
     """
     Ajout des données RH dans la base de données
     
@@ -220,15 +217,12 @@ def insert_employee(rh_file_path, host, database, user, password, port):
 # Exemple d'utilisation
 if __name__ == "__main__":
 
-    # Chargement des variables d'environnement
-    load_dotenv()
-
     # Récupérer les variables d'environnement dans des variables locals
-    host = os.getenv("POSTGRES_HOST", "localhost")
-    database = os.getenv("POSTGRES_DB")
-    user = os.getenv("POSTGRES_USER")
-    password = os.getenv("POSTGRES_PASSWORD")
-    port = os.getenv("POSTGRES_PORT", "5432")
+    DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
+    DB_NAME = os.getenv("POSTGRES_DB")
+    DB_USER = os.getenv("POSTGRES_USER")
+    DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+    DB_PORT = os.getenv("POSTGRES_PORT", "5432")
     
     # Vérifier que les variables requises sont définies
     required_vars = ["POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "GOOGLE_MAPS_API_KEY"]
@@ -239,7 +233,7 @@ if __name__ == "__main__":
         exit(1)
 
     # Récupérer le nombre de salarié dans la base de données
-    number_employees = get_table_count("sport_advantages.employees", host, database, user, password, port)
+    number_employees = get_table_count("sport_advantages.employees", DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
 
     # S'il n'y a pas données d'employée on récupère les données dans le fichier excel pour mettre à l'intérieur
     if number_employees == 0:

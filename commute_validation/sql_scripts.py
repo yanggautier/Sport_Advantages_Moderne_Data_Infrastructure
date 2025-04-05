@@ -81,14 +81,13 @@ def get_table_elements(table_name, host, database, user, password, port):
         # Requête pour récupérer s'il y a des données dans la table de validation
         select_query = f"SELECT * FROM {table_name}"
 
-        # Executing the SELECT query
+        # Exécuter la requête SELECT
         cursor.execute(select_query)
 
-        # Fetching and printing the results
+        # Récupérer les données des requêtes
         df = DataFrame(cursor.fetchall())
         if not df.empty:
             df.columns = [desc[0] for desc in cursor.description]
-    
     except (Exception, psycopg2.Error) as error:
         print(f"Erreur de connection à la base de données: {error}")
 
@@ -98,7 +97,7 @@ def get_table_elements(table_name, host, database, user, password, port):
             cursor.close()
             connection.close()
             print("La connection à la base de données a bien été fermée.")
-        
+            
     return df
 
 
