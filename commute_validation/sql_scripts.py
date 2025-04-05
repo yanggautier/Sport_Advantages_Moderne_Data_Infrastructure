@@ -31,10 +31,10 @@ def get_table_count(table_name, host, database, user, password, port):
         # Requête pour récupérer s'il y a des données dans la table de validation
         select_query = f"SELECT COUNT(*) FROM {table_name}"
 
-        # Executing the SELECT query
+        # Exécuter la requête SELECT
         cursor.execute(select_query)
 
-        # Fetching and printing the results
+        # Récupérer le résultat
         result = cursor.fetchone()
 
         return result[0]
