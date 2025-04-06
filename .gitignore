@@ -9,3 +9,4 @@ data/*
 pyproject.toml
 .python-version
 .vscode
+.airflow/logs
