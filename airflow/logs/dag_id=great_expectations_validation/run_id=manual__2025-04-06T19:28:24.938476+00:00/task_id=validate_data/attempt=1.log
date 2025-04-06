@@ -1,0 +1,368 @@
+[2025-04-06T19:28:34.248+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T19:28:24.938476+00:00 [queued]>
+[2025-04-06T19:28:34.261+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T19:28:24.938476+00:00 [queued]>
+[2025-04-06T19:28:34.261+0000] {taskinstance.py:1308} INFO - Starting attempt 1 of 4
+[2025-04-06T19:28:34.276+0000] {taskinstance.py:1327} INFO - Executing <Task(PythonOperator): validate_data> on 2025-04-06 19:28:24.938476+00:00
+[2025-04-06T19:28:34.284+0000] {standard_task_runner.py:57} INFO - Started process 6224 to run task
+[2025-04-06T19:28:34.289+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'great_expectations_validation', 'validate_data', 'manual__2025-04-06T19:28:24.938476+00:00', '--job-id', '28', '--raw', '--subdir', 'DAGS_FOLDER/data_validation_dag.py', '--cfg-path', '/tmp/tmp2b3hq8qg']
+[2025-04-06T19:28:34.291+0000] {standard_task_runner.py:85} INFO - Job 28: Subtask validate_data
+[2025-04-06T19:28:34.376+0000] {task_command.py:410} INFO - Running <TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T19:28:24.938476+00:00 [running]> on host 6f966d9d4c8d
+[2025-04-06T19:28:34.524+0000] {taskinstance.py:1547} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='great_expectations_validation' AIRFLOW_CTX_TASK_ID='validate_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-06T19:28:24.938476+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-06T19:28:24.938476+00:00'
+[2025-04-06T19:28:34.526+0000] {logging_mixin.py:150} INFO - 🔍 Démarrage de la validation Great Expectations
+[2025-04-06T19:28:34.526+0000] {logging_mixin.py:150} INFO - Connection string pour GE: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T19:28:34.529+0000] {util.py:2007} INFO - Could not find local context root directory
+[2025-04-06T19:28:34.531+0000] {base.py:2134} INFO - Created temporary directory '/tmp/tmpx4uyu_nh' for ephemeral docs site
+[2025-04-06T19:28:34.534+0000] {abstract_data_context.py:5575} INFO - EphemeralDataContext has not implemented `_load_fluent_config()` returning empty `GxConfig`
+[2025-04-06T19:28:34.535+0000] {config.py:185} INFO - Loading 'datasources' ->
+[]
+[2025-04-06T19:28:34.579+0000] {logging_mixin.py:150} INFO - ✅ Contexte GE initialisé
+[2025-04-06T19:28:34.581+0000] {logging_mixin.py:150} INFO - Ajout de la source PostgreSQL...
+[2025-04-06T19:28:34.671+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
+[2025-04-06T19:28:34.704+0000] {logging_mixin.py:150} INFO - ✅ Source PostgreSQL ajoutée
+[2025-04-06T19:28:34.705+0000] {logging_mixin.py:150} INFO - Connexion à la base de données pour vérifier la table...
+[2025-04-06T19:28:34.706+0000] {logging_mixin.py:150} INFO - Paramètres de connexion GE: host=business-postgres, port=5432, user=sportadvantagehr, database=sportadvantages
+[2025-04-06T19:28:34.718+0000] {logging_mixin.py:150} INFO - Schémas disponibles: [('pg_toast',), ('pg_catalog',), ('public',), ('information_schema',), ('sport_advantages',), ('pg_temp_4',), ('pg_toast_temp_4',)]
+[2025-04-06T19:28:34.719+0000] {logging_mixin.py:150} INFO - Le schéma sport_advantages existe: True
+[2025-04-06T19:28:34.723+0000] {logging_mixin.py:150} INFO - Tables dans le schéma sport_advantages: [('employees',), ('commute_validations',), ('sport_activities',), ('sport_advantages',), ('employees_masked',)]
+[2025-04-06T19:28:34.724+0000] {logging_mixin.py:150} INFO - La table sport_activities existe: True
+[2025-04-06T19:28:34.733+0000] {logging_mixin.py:150} INFO - Colonnes de la table: [('id', 'integer'), ('id_employee', 'integer'), ('start_datetime', 'timestamp without time zone'), ('sport_type', 'character varying'), ('distance', 'integer'), ('activity_duration', 'integer'), ('comment', 'character varying')]
+[2025-04-06T19:28:34.735+0000] {logging_mixin.py:150} INFO - Nombre de lignes dans la table: 2907
+[2025-04-06T19:28:34.736+0000] {logging_mixin.py:150} INFO - Échantillon de données: [(1, 70643, datetime.datetime(2024, 4, 5, 11, 0, 3), 'Équitation', None, 3918, None), (2, 34382, datetime.datetime(2024, 4, 5, 14, 45, 38), 'Musculation', None, 5035, None), (3, 50316, datetime.datetime(2024, 4, 5, 14, 40, 45), 'Judo', None, 3254, None), (4, 19773, datetime.datetime(2024, 4, 6, 19, 19, 24), 'Corde à sauter', None, 5696, None), (5, 99401, datetime.datetime(2024, 4, 6, 10, 28, 43), 'Randonnée', 6770, 6449, None)]
+[2025-04-06T19:28:34.737+0000] {logging_mixin.py:150} INFO - Ajout de l'asset de table...
+[2025-04-06T19:28:34.748+0000] {logging_mixin.py:150} INFO - ✅ Asset de table ajouté avec succès
+[2025-04-06T19:28:34.749+0000] {logging_mixin.py:150} INFO - Construction de la requête batch...
+[2025-04-06T19:28:34.750+0000] {logging_mixin.py:150} INFO - ✅ Requête batch construite
+[2025-04-06T19:28:34.750+0000] {logging_mixin.py:150} INFO - Configuration de la suite d'attente...
+[2025-04-06T19:28:34.760+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente configurée
+[2025-04-06T19:28:34.761+0000] {logging_mixin.py:150} INFO - Création du validator...
+[2025-04-06T19:28:34.765+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
+[2025-04-06T19:28:34.795+0000] {batch_filter.py:250} INFO - batch_slice: None was parsed to: slice(0, None, None)
+[2025-04-06T19:28:34.801+0000] {logging_mixin.py:150} INFO - ✅ Validator créé
+[2025-04-06T19:28:34.802+0000] {logging_mixin.py:150} INFO - Aperçu des données:
+[2025-04-06T19:28:34.810+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/1 [00:00<?, ?it/s]
+[2025-04-06T19:28:34.811+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/1 [00:00<?, ?it/s]
+[2025-04-06T19:28:34.829+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 54.70it/s]
+[2025-04-06T19:28:34.831+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 51.45it/s]
+[2025-04-06T19:28:34.831+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 49.12it/s]
+[2025-04-06T19:28:34.832+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 47.20it/s]
+[2025-04-06T19:28:34.855+0000] {logging_mixin.py:150} INFO -    id  id_employee      start_datetime  ... distance  activity_duration  comment
+0   1        70643 2024-04-05 11:00:03  ...      NaN               3918     None
+1   2        34382 2024-04-05 14:45:38  ...      NaN               5035     None
+2   3        50316 2024-04-05 14:40:45  ...      NaN               3254     None
+3   4        19773 2024-04-06 19:19:24  ...      NaN               5696     None
+4   5        99401 2024-04-06 10:28:43  ...   6770.0               6449     None
+
+[5 rows x 7 columns]
+[2025-04-06T19:28:34.856+0000] {logging_mixin.py:150} INFO - Ajout des attentes...
+[2025-04-06T19:28:34.862+0000] {warnings.py:110} WARNING - /home/***/.local/lib/python3.7/site-packages/great_expectations/expectations/expectation.py:1464: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  UserWarning,
+
+[2025-04-06T19:28:34.883+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T19:28:34.884+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T19:28:34.892+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 245.78it/s]
+[2025-04-06T19:28:34.896+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 160.87it/s]
+[2025-04-06T19:28:34.899+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 257.34it/s]
+[2025-04-06T19:28:34.904+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 194.90it/s]
+[2025-04-06T19:28:34.906+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 224.34it/s]
+[2025-04-06T19:28:34.909+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 194.84it/s]
+[2025-04-06T19:28:34.913+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 238.65it/s]
+[2025-04-06T19:28:34.916+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 215.58it/s]
+[2025-04-06T19:28:34.919+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 223.50it/s]
+[2025-04-06T19:28:34.921+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 211.63it/s]
+[2025-04-06T19:28:34.923+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 204.89it/s]
+[2025-04-06T19:28:34.923+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 201.42it/s]
+[2025-04-06T19:28:34.943+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T19:28:34.944+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T19:28:34.949+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 410.26it/s]
+[2025-04-06T19:28:34.953+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 213.06it/s]
+[2025-04-06T19:28:34.956+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 336.78it/s]
+[2025-04-06T19:28:34.959+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 254.57it/s]
+[2025-04-06T19:28:34.961+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 290.31it/s]
+[2025-04-06T19:28:34.965+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 237.79it/s]
+[2025-04-06T19:28:34.968+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 289.78it/s]
+[2025-04-06T19:28:34.970+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 265.26it/s]
+[2025-04-06T19:28:34.973+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 273.29it/s]
+[2025-04-06T19:28:34.975+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 256.60it/s]
+[2025-04-06T19:28:34.976+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 250.06it/s]
+[2025-04-06T19:28:34.977+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 243.80it/s]
+[2025-04-06T19:28:35.011+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T19:28:35.012+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T19:28:35.016+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 421.20it/s]
+[2025-04-06T19:28:35.025+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 150.00it/s]
+[2025-04-06T19:28:35.027+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 255.85it/s]
+[2025-04-06T19:28:35.035+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 170.17it/s]
+[2025-04-06T19:28:35.038+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 230.97it/s]
+[2025-04-06T19:28:35.044+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 184.85it/s]
+[2025-04-06T19:28:35.049+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 238.85it/s]
+[2025-04-06T19:28:35.054+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 212.74it/s]
+[2025-04-06T19:28:35.059+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 233.90it/s]
+[2025-04-06T19:28:35.062+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 219.63it/s]
+[2025-04-06T19:28:35.062+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 216.53it/s]
+[2025-04-06T19:28:35.063+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 212.84it/s]
+[2025-04-06T19:28:35.100+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T19:28:35.101+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T19:28:35.106+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 404.97it/s]
+[2025-04-06T19:28:35.114+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 153.26it/s]
+[2025-04-06T19:28:35.117+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 253.41it/s]
+[2025-04-06T19:28:35.126+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 158.87it/s]
+[2025-04-06T19:28:35.129+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 215.52it/s]
+[2025-04-06T19:28:35.135+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 176.83it/s]
+[2025-04-06T19:28:35.140+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 233.16it/s]
+[2025-04-06T19:28:35.144+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 210.28it/s]
+[2025-04-06T19:28:35.149+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 231.28it/s]
+[2025-04-06T19:28:35.152+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 216.32it/s]
+[2025-04-06T19:28:35.153+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 213.87it/s]
+[2025-04-06T19:28:35.153+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 211.16it/s]
+[2025-04-06T19:28:35.159+0000] {logging_mixin.py:150} INFO - ✅ Attentes ajoutées
+[2025-04-06T19:28:35.160+0000] {logging_mixin.py:150} INFO - Sauvegarde de la suite d'attente...
+[2025-04-06T19:28:35.161+0000] {validator.py:1443} INFO - 	4 expectation(s) included in expectation_suite.
+[2025-04-06T19:28:35.168+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente sauvegardée
+[2025-04-06T19:28:35.169+0000] {logging_mixin.py:150} INFO - Création du checkpoint...
+[2025-04-06T19:28:35.183+0000] {logging_mixin.py:150} INFO - ✅ Checkpoint créé
+[2025-04-06T19:28:35.184+0000] {logging_mixin.py:150} INFO - Exécution de la validation avec SimpleCheckpoint...
+[2025-04-06T19:28:35.209+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
+[2025-04-06T19:28:35.215+0000] {batch_filter.py:250} INFO - batch_slice: None was parsed to: slice(0, None, None)
+[2025-04-06T19:28:35.221+0000] {validator.py:1443} INFO - 	4 expectation(s) included in expectation_suite.
+[2025-04-06T19:28:35.366+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/34 [00:00<?, ?it/s]
+[2025-04-06T19:28:35.367+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/34 [00:00<?, ?it/s]
+[2025-04-06T19:28:35.373+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   6%|5         | 2/34 [00:00<00:00, 361.22it/s]
+[2025-04-06T19:28:35.404+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   6%|5         | 2/34 [00:00<00:00, 54.88it/s] 
+[2025-04-06T19:28:35.407+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  12%|#1        | 4/34 [00:00<00:00, 100.68it/s]
+[2025-04-06T19:28:35.437+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  12%|#1        | 4/34 [00:00<00:00, 56.94it/s] 
+[2025-04-06T19:28:35.443+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  29%|##9       | 10/34 [00:00<00:00, 131.23it/s]
+[2025-04-06T19:28:35.469+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  29%|##9       | 10/34 [00:00<00:00, 98.64it/s] 
+[2025-04-06T19:28:35.470+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  29%|##9       | 10/34 [00:00<00:00, 98.64it/s]
+[2025-04-06T19:28:35.489+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########2 | 28/34 [00:00<00:00, 98.64it/s]
+[2025-04-06T19:28:35.503+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########2 | 28/34 [00:00<00:00, 98.64it/s]
+[2025-04-06T19:28:35.518+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 34/34 [00:00<00:00, 98.64it/s]
+[2025-04-06T19:28:35.528+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 34/34 [00:00<00:00, 98.64it/s]
+[2025-04-06T19:28:35.529+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 34/34 [00:00<00:00, 98.64it/s]
+[2025-04-06T19:28:35.530+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 34/34 [00:00<00:00, 208.76it/s]
+[2025-04-06T19:28:36.305+0000] {logging_mixin.py:150} INFO - Résultat de la validation: {
+  "run_id": {
+    "run_time": "2025-04-06T19:28:35.205228+00:00",
+    "run_name": "***_validation_run"
+  },
+  "run_results": {
+    "ValidationResultIdentifier::sport_activities_expectation_suite/***_validation_run/20250406T192835.205228Z/pg_datasource-sport_activities": {
+      "validation_result": {
+        "success": true,
+        "statistics": {
+          "evaluated_expectations": 4,
+          "successful_expectations": 4,
+          "unsuccessful_expectations": 0,
+          "success_percent": 100.0
+        },
+        "evaluation_parameters": {},
+        "results": [
+          {
+            "success": true,
+            "result": {
+              "element_count": 2907,
+              "unexpected_count": 0,
+              "unexpected_percent": 0.0,
+              "partial_unexpected_list": [],
+              "partial_unexpected_counts": []
+            },
+            "exception_info": {
+              "raised_exception": false,
+              "exception_traceback": null,
+              "exception_message": null
+            },
+            "expectation_config": {
+              "kwargs": {
+                "column": "start_datetime",
+                "batch_id": "pg_datasource-sport_activities"
+              },
+              "expectation_type": "expect_column_values_to_not_be_null",
+              "meta": {}
+            },
+            "meta": {}
+          },
+          {
+            "success": true,
+            "result": {
+              "element_count": 2907,
+              "unexpected_count": 0,
+              "unexpected_percent": 0.0,
+              "partial_unexpected_list": [],
+              "partial_unexpected_counts": []
+            },
+            "exception_info": {
+              "raised_exception": false,
+              "exception_traceback": null,
+              "exception_message": null
+            },
+            "expectation_config": {
+              "kwargs": {
+                "column": "sport_type",
+                "batch_id": "pg_datasource-sport_activities"
+              },
+              "expectation_type": "expect_column_values_to_not_be_null",
+              "meta": {}
+            },
+            "meta": {}
+          },
+          {
+            "success": true,
+            "result": {
+              "element_count": 2907,
+              "unexpected_count": 0,
+              "unexpected_percent": 0.0,
+              "partial_unexpected_list": [],
+              "missing_count": 0,
+              "missing_percent": 0.0,
+              "unexpected_percent_total": 0.0,
+              "unexpected_percent_nonmissing": 0.0,
+              "partial_unexpected_counts": []
+            },
+            "exception_info": {
+              "raised_exception": false,
+              "exception_traceback": null,
+              "exception_message": null
+            },
+            "expectation_config": {
+              "kwargs": {
+                "column": "activity_duration",
+                "min_value": 0,
+                "mostly": 1.0,
+                "batch_id": "pg_datasource-sport_activities"
+              },
+              "expectation_type": "expect_column_values_to_be_between",
+              "meta": {}
+            },
+            "meta": {}
+          },
+          {
+            "success": true,
+            "result": {
+              "element_count": 2907,
+              "unexpected_count": 0,
+              "unexpected_percent": 0.0,
+              "partial_unexpected_list": [],
+              "missing_count": 2069,
+              "missing_percent": 71.17303061575507,
+              "unexpected_percent_total": 0.0,
+              "unexpected_percent_nonmissing": 0.0,
+              "partial_unexpected_counts": []
+            },
+            "exception_info": {
+              "raised_exception": false,
+              "exception_traceback": null,
+              "exception_message": null
+            },
+            "expectation_config": {
+              "kwargs": {
+                "allow_cross_type_comparisons": false,
+                "column": "distance",
+                "include_minimum": true,
+                "min_value": 0,
+                "missing_value_handling": "ignore",
+                "mostly": 1.0,
+                "batch_id": "pg_datasource-sport_activities"
+              },
+              "expectation_type": "expect_column_values_to_be_between",
+              "meta": {}
+            },
+            "meta": {}
+          }
+        ],
+        "meta": {
+          "great_expectations_version": "0.16.13",
+          "expectation_suite_name": "sport_activities_expectation_suite",
+          "run_id": {
+            "run_time": "2025-04-06T19:28:35.205228+00:00",
+            "run_name": "***_validation_run"
+          },
+          "batch_spec": {
+            "type": "table",
+            "data_asset_name": "sport_activities",
+            "table_name": "sport_activities",
+            "schema_name": "sport_advantages",
+            "batch_identifiers": {}
+          },
+          "batch_markers": {
+            "ge_load_time": "20250406T192835.210542Z"
+          },
+          "active_batch_definition": {
+            "datasource_name": "pg_datasource",
+            "data_connector_name": "fluent",
+            "data_asset_name": "sport_activities",
+            "batch_identifiers": {}
+          },
+          "validation_time": "20250406T192835.220709Z",
+          "checkpoint_name": "sport_activities_checkpoint",
+          "validation_id": null,
+          "checkpoint_id": null
+        }
+      },
+      "actions_results": {
+        "store_validation_result": {
+          "class": "StoreValidationResultAction"
+        },
+        "store_evaluation_params": {
+          "class": "StoreEvaluationParametersAction"
+        },
+        "update_data_docs": {
+          "local_site": "file:///tmp/tmpx4uyu_nh/validations/sport_activities_expectation_suite/***_validation_run/20250406T192835.205228Z/pg_datasource-sport_activities.html",
+          "class": "UpdateDataDocsAction"
+        }
+      }
+    }
+  },
+  "checkpoint_config": {
+    "runtime_configuration": {},
+    "template_name": null,
+    "expectation_suite_name": null,
+    "notify_with": null,
+    "module_name": "great_expectations.checkpoint",
+    "evaluation_parameters": {},
+    "config_version": 1.0,
+    "name": "sport_activities_checkpoint",
+    "default_validation_id": null,
+    "class_name": "Checkpoint",
+    "run_name_template": "%Y%m%d-%H%M%S-validation",
+    "site_names": null,
+    "expectation_suite_ge_cloud_id": null,
+    "validations": [
+      {
+        "batch_request": {
+          "datasource_name": "pg_datasource",
+          "data_asset_name": "sport_activities"
+        },
+        "expectation_suite_name": "sport_activities_expectation_suite"
+      }
+    ],
+    "profilers": [],
+    "slack_webhook": null,
+    "batch_request": {},
+    "action_list": [
+      {
+        "name": "store_validation_result",
+        "action": {
+          "class_name": "StoreValidationResultAction"
+        }
+      },
+      {
+        "name": "store_evaluation_params",
+        "action": {
+          "class_name": "StoreEvaluationParametersAction"
+        }
+      },
+      {
+        "name": "update_data_docs",
+        "action": {
+          "class_name": "UpdateDataDocsAction",
+          "site_names": []
+        }
+      }
+    ],
+    "ge_cloud_id": null,
+    "notify_on": null
+  },
+  "success": true
+}
+[2025-04-06T19:28:36.310+0000] {logging_mixin.py:150} INFO - ✅ Validation réussie !
+[2025-04-06T19:28:36.311+0000] {python.py:183} INFO - Done. Returned value was: True
+[2025-04-06T19:28:36.365+0000] {taskinstance.py:1350} INFO - Marking task as SUCCESS. dag_id=great_expectations_validation, task_id=validate_data, execution_date=20250406T192824, start_date=20250406T192834, end_date=20250406T192836
+[2025-04-06T19:28:36.433+0000] {local_task_job_runner.py:225} INFO - Task exited with return code 0
+[2025-04-06T19:28:36.462+0000] {taskinstance.py:2653} INFO - 0 downstream tasks scheduled from follow-on schedule check
