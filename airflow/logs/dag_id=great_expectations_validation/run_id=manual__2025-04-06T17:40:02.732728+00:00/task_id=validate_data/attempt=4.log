@@ -1,0 +1,50 @@
+[2025-04-06T17:46:33.840+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T17:40:02.732728+00:00 [queued]>
+[2025-04-06T17:46:33.856+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T17:40:02.732728+00:00 [queued]>
+[2025-04-06T17:46:33.857+0000] {taskinstance.py:1308} INFO - Starting attempt 4 of 4
+[2025-04-06T17:46:33.881+0000] {taskinstance.py:1327} INFO - Executing <Task(PythonOperator): validate_data> on 2025-04-06 17:40:02.732728+00:00
+[2025-04-06T17:46:33.903+0000] {standard_task_runner.py:57} INFO - Started process 2105 to run task
+[2025-04-06T17:46:33.911+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'great_expectations_validation', 'validate_data', 'manual__2025-04-06T17:40:02.732728+00:00', '--job-id', '11', '--raw', '--subdir', 'DAGS_FOLDER/data_validation_dag.py', '--cfg-path', '/tmp/tmp0p1pk2do']
+[2025-04-06T17:46:33.913+0000] {standard_task_runner.py:85} INFO - Job 11: Subtask validate_data
+[2025-04-06T17:46:34.014+0000] {task_command.py:410} INFO - Running <TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T17:40:02.732728+00:00 [running]> on host 6f966d9d4c8d
+[2025-04-06T17:46:34.167+0000] {taskinstance.py:1547} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='great_expectations_validation' AIRFLOW_CTX_TASK_ID='validate_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-06T17:40:02.732728+00:00' AIRFLOW_CTX_TRY_NUMBER='4' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-06T17:40:02.732728+00:00'
+[2025-04-06T17:46:34.169+0000] {logging_mixin.py:150} INFO - 🔍 Démarrage de la validation Great Expectations
+[2025-04-06T17:46:34.170+0000] {logging_mixin.py:150} INFO - Connection string pour GE: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T17:46:34.173+0000] {util.py:2007} INFO - Could not find local context root directory
+[2025-04-06T17:46:34.175+0000] {base.py:2134} INFO - Created temporary directory '/tmp/tmpv23gcffu' for ephemeral docs site
+[2025-04-06T17:46:34.179+0000] {abstract_data_context.py:5575} INFO - EphemeralDataContext has not implemented `_load_fluent_config()` returning empty `GxConfig`
+[2025-04-06T17:46:34.180+0000] {config.py:185} INFO - Loading 'datasources' ->
+[]
+[2025-04-06T17:46:34.218+0000] {logging_mixin.py:150} INFO - ✅ Contexte GE initialisé
+[2025-04-06T17:46:34.219+0000] {logging_mixin.py:150} INFO - Ajout de la source PostgreSQL...
+[2025-04-06T17:46:34.323+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
+[2025-04-06T17:46:34.366+0000] {logging_mixin.py:150} INFO - ✅ Source PostgreSQL ajoutée
+[2025-04-06T17:46:34.367+0000] {logging_mixin.py:150} INFO - Connexion à la base de données pour vérifier la table...
+[2025-04-06T17:46:34.368+0000] {logging_mixin.py:150} INFO - Paramètres de connexion GE: host=business-postgres, port=5432, user=sportadvantagehr, database=sportadvantages
+[2025-04-06T17:46:34.384+0000] {logging_mixin.py:150} INFO - Schémas disponibles: [('pg_toast',), ('pg_catalog',), ('public',), ('information_schema',), ('sport_advantages',)]
+[2025-04-06T17:46:34.386+0000] {logging_mixin.py:150} INFO - Le schéma sport_advantages existe: True
+[2025-04-06T17:46:34.393+0000] {logging_mixin.py:150} INFO - Tables dans le schéma sport_advantages: [('employees',), ('commute_validations',), ('sport_activities',), ('sport_advantages',), ('employees_masked',)]
+[2025-04-06T17:46:34.395+0000] {logging_mixin.py:150} INFO - La table sport_activities existe: True
+[2025-04-06T17:46:34.403+0000] {logging_mixin.py:150} INFO - Colonnes de la table: [('id', 'integer'), ('id_employee', 'integer'), ('start_datetime', 'timestamp without time zone'), ('sport_type', 'character varying'), ('distance', 'integer'), ('activity_duration', 'integer'), ('comment', 'character varying')]
+[2025-04-06T17:46:34.406+0000] {logging_mixin.py:150} INFO - Nombre de lignes dans la table: 2907
+[2025-04-06T17:46:34.411+0000] {logging_mixin.py:150} INFO - Échantillon de données: [(1, 70643, datetime.datetime(2024, 4, 5, 11, 0, 3), 'Équitation', None, 3918, None), (2, 34382, datetime.datetime(2024, 4, 5, 14, 45, 38), 'Musculation', None, 5035, None), (3, 50316, datetime.datetime(2024, 4, 5, 14, 40, 45), 'Judo', None, 3254, None), (4, 19773, datetime.datetime(2024, 4, 6, 19, 19, 24), 'Corde à sauter', None, 5696, None), (5, 99401, datetime.datetime(2024, 4, 6, 10, 28, 43), 'Randonnée', 6770, 6449, None)]
+[2025-04-06T17:46:34.413+0000] {logging_mixin.py:150} INFO - Ajout de l'asset de table...
+[2025-04-06T17:46:34.417+0000] {logging_mixin.py:150} INFO - ⚠️ Erreur lors de l'ajout de l'asset de table: Attempt to connect to table: "sport_advantages.sport_activities" failed because the table "sport_advantages.sport_activities" does not exist.
+[2025-04-06T17:46:34.418+0000] {taskinstance.py:1824} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 181, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 198, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/data_validation_dag.py", line 274, in run_ge_validation
+    table_name="sport_advantages.sport_activities"
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/datasource/fluent/sql_datasource.py", line 991, in add_table_asset
+    return self._add_asset(asset)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/datasource/fluent/interfaces.py", line 546, in _add_asset
+    asset.test_connection()
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/datasource/fluent/sql_datasource.py", line 834, in test_connection
+    f'Attempt to connect to table: "{self.qualified_name}" failed because the table '
+great_expectations.datasource.fluent.interfaces.TestConnectionError: Attempt to connect to table: "sport_advantages.sport_activities" failed because the table "sport_advantages.sport_activities" does not exist.
+[2025-04-06T17:46:34.447+0000] {taskinstance.py:1350} INFO - Marking task as FAILED. dag_id=great_expectations_validation, task_id=validate_data, execution_date=20250406T174002, start_date=20250406T174633, end_date=20250406T174634
+[2025-04-06T17:46:34.472+0000] {standard_task_runner.py:109} ERROR - Failed to execute job 11 for task validate_data (Attempt to connect to table: "sport_advantages.sport_activities" failed because the table "sport_advantages.sport_activities" does not exist.; 2105)
+[2025-04-06T17:46:34.528+0000] {local_task_job_runner.py:225} INFO - Task exited with return code 1
+[2025-04-06T17:46:34.561+0000] {taskinstance.py:2653} INFO - 0 downstream tasks scheduled from follow-on schedule check
