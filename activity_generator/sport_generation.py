@@ -1,7 +1,7 @@
 import os
 import random
 from datetime import datetime, timedelta
-from typing import Optional, List
+from typing import Optional, List, Dict
 from sql_manipulation import get_employee_ids, bulk_insert_sport_activities, get_activitis_nb
 import logging
 
@@ -133,14 +133,14 @@ def get_activity_time(current_date: datetime) -> datetime:
 
     return datetime(current_date.year, current_date.month, current_date.day, hour, minute, second)
 
-def sport_activity_generator() -> List[dict]:
+def sport_activity_generator() -> List[Dict[str, str]]:
         
     """Générer une liste d'activité de sport pour la durée d'un an passé
 
     Args:
 
     Return:
-        sport_list(List[dict]): Une liste d'activé de sport 
+        sport_list(List[Dict[str, str]]): Une liste d'activé de sport 
     """
     # Iniialiser  la table pour stocker les informations des activités
     sport_list = list()
