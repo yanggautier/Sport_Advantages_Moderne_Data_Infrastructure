@@ -1,0 +1,170 @@
+[2025-04-06T18:53:35.450+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T18:51:21.234125+00:00 [queued]>
+[2025-04-06T18:53:35.462+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T18:51:21.234125+00:00 [queued]>
+[2025-04-06T18:53:35.463+0000] {taskinstance.py:1308} INFO - Starting attempt 2 of 4
+[2025-04-06T18:53:35.483+0000] {taskinstance.py:1327} INFO - Executing <Task(PythonOperator): validate_data> on 2025-04-06 18:51:21.234125+00:00
+[2025-04-06T18:53:35.493+0000] {standard_task_runner.py:57} INFO - Started process 4793 to run task
+[2025-04-06T18:53:35.498+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'great_expectations_validation', 'validate_data', 'manual__2025-04-06T18:51:21.234125+00:00', '--job-id', '24', '--raw', '--subdir', 'DAGS_FOLDER/data_validation_dag.py', '--cfg-path', '/tmp/tmpr0sl_unh']
+[2025-04-06T18:53:35.500+0000] {standard_task_runner.py:85} INFO - Job 24: Subtask validate_data
+[2025-04-06T18:53:35.587+0000] {task_command.py:410} INFO - Running <TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T18:51:21.234125+00:00 [running]> on host 6f966d9d4c8d
+[2025-04-06T18:53:35.730+0000] {taskinstance.py:1547} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='great_expectations_validation' AIRFLOW_CTX_TASK_ID='validate_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-06T18:51:21.234125+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-06T18:51:21.234125+00:00'
+[2025-04-06T18:53:35.732+0000] {logging_mixin.py:150} INFO - 🔍 Démarrage de la validation Great Expectations
+[2025-04-06T18:53:35.733+0000] {logging_mixin.py:150} INFO - Connection string pour GE: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T18:53:35.736+0000] {util.py:2007} INFO - Could not find local context root directory
+[2025-04-06T18:53:35.737+0000] {base.py:2134} INFO - Created temporary directory '/tmp/tmpc9bfm6w4' for ephemeral docs site
+[2025-04-06T18:53:35.740+0000] {abstract_data_context.py:5575} INFO - EphemeralDataContext has not implemented `_load_fluent_config()` returning empty `GxConfig`
+[2025-04-06T18:53:35.742+0000] {config.py:185} INFO - Loading 'datasources' ->
+[]
+[2025-04-06T18:53:35.774+0000] {logging_mixin.py:150} INFO - ✅ Contexte GE initialisé
+[2025-04-06T18:53:35.776+0000] {logging_mixin.py:150} INFO - Ajout de la source PostgreSQL...
+[2025-04-06T18:53:35.854+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
+[2025-04-06T18:53:35.884+0000] {logging_mixin.py:150} INFO - ✅ Source PostgreSQL ajoutée
+[2025-04-06T18:53:35.885+0000] {logging_mixin.py:150} INFO - Connexion à la base de données pour vérifier la table...
+[2025-04-06T18:53:35.886+0000] {logging_mixin.py:150} INFO - Paramètres de connexion GE: host=business-postgres, port=5432, user=sportadvantagehr, database=sportadvantages
+[2025-04-06T18:53:35.896+0000] {logging_mixin.py:150} INFO - Schémas disponibles: [('pg_toast',), ('pg_catalog',), ('public',), ('information_schema',), ('sport_advantages',), ('pg_temp_4',), ('pg_toast_temp_4',)]
+[2025-04-06T18:53:35.897+0000] {logging_mixin.py:150} INFO - Le schéma sport_advantages existe: True
+[2025-04-06T18:53:35.899+0000] {logging_mixin.py:150} INFO - Tables dans le schéma sport_advantages: [('employees',), ('commute_validations',), ('sport_activities',), ('sport_advantages',), ('employees_masked',)]
+[2025-04-06T18:53:35.901+0000] {logging_mixin.py:150} INFO - La table sport_activities existe: True
+[2025-04-06T18:53:35.907+0000] {logging_mixin.py:150} INFO - Colonnes de la table: [('id', 'integer'), ('id_employee', 'integer'), ('start_datetime', 'timestamp without time zone'), ('sport_type', 'character varying'), ('distance', 'integer'), ('activity_duration', 'integer'), ('comment', 'character varying')]
+[2025-04-06T18:53:35.909+0000] {logging_mixin.py:150} INFO - Nombre de lignes dans la table: 2907
+[2025-04-06T18:53:35.910+0000] {logging_mixin.py:150} INFO - Échantillon de données: [(1, 70643, datetime.datetime(2024, 4, 5, 11, 0, 3), 'Équitation', None, 3918, None), (2, 34382, datetime.datetime(2024, 4, 5, 14, 45, 38), 'Musculation', None, 5035, None), (3, 50316, datetime.datetime(2024, 4, 5, 14, 40, 45), 'Judo', None, 3254, None), (4, 19773, datetime.datetime(2024, 4, 6, 19, 19, 24), 'Corde à sauter', None, 5696, None), (5, 99401, datetime.datetime(2024, 4, 6, 10, 28, 43), 'Randonnée', 6770, 6449, None)]
+[2025-04-06T18:53:35.911+0000] {logging_mixin.py:150} INFO - Ajout de l'asset de table...
+[2025-04-06T18:53:35.922+0000] {logging_mixin.py:150} INFO - ✅ Asset de table ajouté avec succès
+[2025-04-06T18:53:35.923+0000] {logging_mixin.py:150} INFO - Construction de la requête batch...
+[2025-04-06T18:53:35.924+0000] {logging_mixin.py:150} INFO - ✅ Requête batch construite
+[2025-04-06T18:53:35.925+0000] {logging_mixin.py:150} INFO - Configuration de la suite d'attente...
+[2025-04-06T18:53:35.933+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente configurée
+[2025-04-06T18:53:35.937+0000] {logging_mixin.py:150} INFO - Création du validator...
+[2025-04-06T18:53:35.940+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
+[2025-04-06T18:53:35.965+0000] {batch_filter.py:250} INFO - batch_slice: None was parsed to: slice(0, None, None)
+[2025-04-06T18:53:35.971+0000] {logging_mixin.py:150} INFO - ✅ Validator créé
+[2025-04-06T18:53:35.973+0000] {logging_mixin.py:150} INFO - Aperçu des données:
+[2025-04-06T18:53:35.982+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/1 [00:00<?, ?it/s]
+[2025-04-06T18:53:35.983+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/1 [00:00<?, ?it/s]
+[2025-04-06T18:53:35.998+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 68.21it/s]
+[2025-04-06T18:53:36.000+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 59.07it/s]
+[2025-04-06T18:53:36.001+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 55.95it/s]
+[2025-04-06T18:53:36.002+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 52.87it/s]
+[2025-04-06T18:53:36.019+0000] {logging_mixin.py:150} INFO -    id  id_employee      start_datetime  ... distance  activity_duration  comment
+0   1        70643 2024-04-05 11:00:03  ...      NaN               3918     None
+1   2        34382 2024-04-05 14:45:38  ...      NaN               5035     None
+2   3        50316 2024-04-05 14:40:45  ...      NaN               3254     None
+3   4        19773 2024-04-06 19:19:24  ...      NaN               5696     None
+4   5        99401 2024-04-06 10:28:43  ...   6770.0               6449     None
+
+[5 rows x 7 columns]
+[2025-04-06T18:53:36.020+0000] {logging_mixin.py:150} INFO - Ajout des attentes...
+[2025-04-06T18:53:36.023+0000] {warnings.py:110} WARNING - /home/***/.local/lib/python3.7/site-packages/great_expectations/expectations/expectation.py:1464: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  UserWarning,
+
+[2025-04-06T18:53:36.044+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.045+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.056+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 202.30it/s]
+[2025-04-06T18:53:36.061+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 127.13it/s]
+[2025-04-06T18:53:36.064+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 207.72it/s]
+[2025-04-06T18:53:36.072+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 149.51it/s]
+[2025-04-06T18:53:36.073+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 177.92it/s]
+[2025-04-06T18:53:36.077+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 158.11it/s]
+[2025-04-06T18:53:36.080+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 199.07it/s]
+[2025-04-06T18:53:36.083+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 184.52it/s]
+[2025-04-06T18:53:36.093+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 168.33it/s]
+[2025-04-06T18:53:36.095+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 161.35it/s]
+[2025-04-06T18:53:36.096+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 158.62it/s]
+[2025-04-06T18:53:36.097+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 155.06it/s]
+[2025-04-06T18:53:36.116+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.117+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.122+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 420.86it/s]
+[2025-04-06T18:53:36.126+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 219.26it/s]
+[2025-04-06T18:53:36.129+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 344.28it/s]
+[2025-04-06T18:53:36.133+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 257.92it/s]
+[2025-04-06T18:53:36.134+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 291.20it/s]
+[2025-04-06T18:53:36.138+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 240.93it/s]
+[2025-04-06T18:53:36.141+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 292.29it/s]
+[2025-04-06T18:53:36.144+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 256.90it/s]
+[2025-04-06T18:53:36.147+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 264.19it/s]
+[2025-04-06T18:53:36.149+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 248.77it/s]
+[2025-04-06T18:53:36.150+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 243.43it/s]
+[2025-04-06T18:53:36.151+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 236.39it/s]
+[2025-04-06T18:53:36.188+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.189+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.194+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 343.88it/s]
+[2025-04-06T18:53:36.204+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 128.46it/s]
+[2025-04-06T18:53:36.208+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 204.02it/s]
+[2025-04-06T18:53:36.217+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 142.36it/s]
+[2025-04-06T18:53:36.220+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 190.08it/s]
+[2025-04-06T18:53:36.228+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 153.16it/s]
+[2025-04-06T18:53:36.234+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 198.69it/s]
+[2025-04-06T18:53:36.239+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 178.48it/s]
+[2025-04-06T18:53:36.245+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 195.72it/s]
+[2025-04-06T18:53:36.249+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 182.98it/s]
+[2025-04-06T18:53:36.250+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 180.49it/s]
+[2025-04-06T18:53:36.250+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 178.25it/s]
+[2025-04-06T18:53:36.286+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.288+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
+[2025-04-06T18:53:36.304+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 125.54it/s]
+[2025-04-06T18:53:36.313+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 78.77it/s] 
+[2025-04-06T18:53:36.316+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 141.11it/s]
+[2025-04-06T18:53:36.324+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 110.55it/s]
+[2025-04-06T18:53:36.327+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 150.73it/s]
+[2025-04-06T18:53:36.335+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 127.12it/s]
+[2025-04-06T18:53:36.340+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 170.48it/s]
+[2025-04-06T18:53:36.346+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 154.00it/s]
+[2025-04-06T18:53:36.351+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 172.13it/s]
+[2025-04-06T18:53:36.355+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 162.81it/s]
+[2025-04-06T18:53:36.356+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 159.91it/s]
+[2025-04-06T18:53:36.358+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 157.07it/s]
+[2025-04-06T18:53:36.365+0000] {logging_mixin.py:150} INFO - ✅ Attentes ajoutées
+[2025-04-06T18:53:36.366+0000] {logging_mixin.py:150} INFO - Sauvegarde de la suite d'attente...
+[2025-04-06T18:53:36.367+0000] {validator.py:1443} INFO - 	4 expectation(s) included in expectation_suite.
+[2025-04-06T18:53:36.373+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente sauvegardée
+[2025-04-06T18:53:36.375+0000] {logging_mixin.py:150} INFO - Sauvegarde de la suite d'attente...
+[2025-04-06T18:53:36.378+0000] {validator.py:1443} INFO - 	4 expectation(s) included in expectation_suite.
+[2025-04-06T18:53:36.385+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente sauvegardée
+[2025-04-06T18:53:36.387+0000] {logging_mixin.py:150} INFO - Exécution de la validation...
+[2025-04-06T18:53:36.388+0000] {logging_mixin.py:150} INFO - Exécution de la validation avec SimpleCheckpoint...
+[2025-04-06T18:53:36.393+0000] {taskinstance.py:1824} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/in_memory_store_backend.py", line 51, in _get
+    return self._store[key]
+KeyError: ('sport_activities_checkpoint',)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/checkpoint_store.py", line 145, in get_checkpoint
+    checkpoint_config: Optional[Any] = self.get(key=key)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/store.py", line 188, in get
+    value = self._store_backend.get(self.key_to_tuple(key))
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/_store_backend.py", line 121, in get
+    value = self._get(key, **kwargs)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/in_memory_store_backend.py", line 53, in _get
+    raise InvalidKeyError(f"{str(e)}")
+great_expectations.exceptions.exceptions.InvalidKeyError: ('sport_activities_checkpoint',)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 181, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 198, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/data_validation_dag.py", line 346, in run_ge_validation
+    run_name="airflow_validation_run"
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/core/usage_statistics/usage_statistics.py", line 318, in usage_statistics_wrapped_method
+    result = func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2288, in run_checkpoint
+    **kwargs,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2313, in _run_checkpoint
+    id=id,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2163, in get_checkpoint
+    name=name, id=id
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/checkpoint_store.py", line 151, in get_checkpoint
+    message=f'Non-existent Checkpoint configuration named "{key.configuration_key}".\n\nDetails: {exc_ik}'  # type: ignore[union-attr]
+great_expectations.exceptions.exceptions.CheckpointNotFoundError: Non-existent Checkpoint configuration named "sport_activities_checkpoint".
+
+Details: ('sport_activities_checkpoint',)
+[2025-04-06T18:53:36.412+0000] {taskinstance.py:1350} INFO - Marking task as UP_FOR_RETRY. dag_id=great_expectations_validation, task_id=validate_data, execution_date=20250406T185121, start_date=20250406T185335, end_date=20250406T185336
+[2025-04-06T18:53:36.424+0000] {standard_task_runner.py:109} ERROR - Failed to execute job 24 for task validate_data (Non-existent Checkpoint configuration named "sport_activities_checkpoint".
+
+Details: ('sport_activities_checkpoint',); 4793)
+[2025-04-06T18:53:36.476+0000] {local_task_job_runner.py:225} INFO - Task exited with return code 1
+[2025-04-06T18:53:36.507+0000] {taskinstance.py:2653} INFO - 0 downstream tasks scheduled from follow-on schedule check

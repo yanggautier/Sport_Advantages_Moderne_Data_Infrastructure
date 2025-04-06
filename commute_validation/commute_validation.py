@@ -2,7 +2,7 @@ import requests
 import os
 import time
 import pandas as pd
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
 from sql_scripts import get_table_count, table_bulk_insert, get_table_elements
 
 # Clé API API Distance Matrix(à définir dans votre fichier .env)
@@ -60,7 +60,7 @@ def get_distance(origin:str, destination:str, mode:str="walking") -> Tuple[float
     
     
 
-def validate_commutes(employees_df) -> List[dict]:
+def validate_commutes(employees_df) -> List[Dict[str, Any]]:
     """
     Valide les déclarations de mode de transport des employés
     
@@ -69,7 +69,7 @@ def validate_commutes(employees_df) -> List[dict]:
                                     (doit contenir les colonnes 'id_employee', 'address', 'transport_mode')
         
     Returns:
-        list (List(dict)): Liste contenant les validations et les distances calculées
+        list (List[Dict[str, Any]]): Liste contenant les validations et les distances calculées
     """
     results = []
     
