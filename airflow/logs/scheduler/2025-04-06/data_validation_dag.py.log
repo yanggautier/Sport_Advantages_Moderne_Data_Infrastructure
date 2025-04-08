@@ -4581,3 +4581,107 @@ IndentationError: unexpected indent
 [2025-04-06T19:34:43.018+0000] {logging_mixin.py:150} INFO - [2025-04-06T19:34:43.018+0000] {dag.py:2742} INFO - Sync 1 DAGs
 [2025-04-06T19:34:43.044+0000] {logging_mixin.py:150} INFO - [2025-04-06T19:34:43.044+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
 [2025-04-06T19:34:43.062+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 2.719 seconds
+[2025-04-06T20:37:59.267+0000] {processor.py:157} INFO - Started process (PID=163) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:37:59.272+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:37:59.296+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:37:59.295+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:38:04.651+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:04.651+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:38:08.017+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:38:08.021+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:08.021+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:38:08.043+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:38:08.128+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:08.127+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:38:08.168+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:08.168+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:38:08.213+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 8.979 seconds
+[2025-04-06T20:38:38.973+0000] {processor.py:157} INFO - Started process (PID=183) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:38:38.977+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:38:38.980+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:38.979+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:38:41.557+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:41.556+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:38:43.287+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:38:43.290+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:43.290+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:38:43.302+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:38:43.345+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:43.345+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:38:43.387+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:38:43.386+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:38:43.412+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 4.447 seconds
+[2025-04-06T20:43:26.797+0000] {processor.py:157} INFO - Started process (PID=162) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:43:26.800+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:43:26.804+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:26.803+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:43:33.071+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:33.070+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:43:35.915+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:43:35.919+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:35.918+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:43:35.935+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:43:36.272+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:36.271+0000] {manager.py:504} INFO - Created Permission View: can edit on DAG:great_expectations_validation
+[2025-04-06T20:43:36.298+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:36.297+0000] {manager.py:504} INFO - Created Permission View: can delete on DAG:great_expectations_validation
+[2025-04-06T20:43:36.314+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:36.314+0000] {manager.py:504} INFO - Created Permission View: can read on DAG:great_expectations_validation
+[2025-04-06T20:43:36.355+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:36.355+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:43:36.394+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:36.394+0000] {dag.py:2763} INFO - Creating ORM DAG for great_expectations_validation
+[2025-04-06T20:43:36.427+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:43:36.427+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:43:36.463+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 9.693 seconds
+[2025-04-06T20:44:06.754+0000] {processor.py:157} INFO - Started process (PID=183) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:44:06.756+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:44:06.758+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:06.757+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:44:09.730+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:09.730+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:44:11.810+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:44:11.815+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:11.815+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:44:11.826+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:44:11.877+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:11.877+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:44:11.924+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:11.923+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:44:11.956+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 5.208 seconds
+[2025-04-06T20:44:42.413+0000] {processor.py:157} INFO - Started process (PID=210) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:44:42.437+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:44:42.502+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:42.494+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:44:46.828+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:46.827+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:44:48.637+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:44:48.663+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:48.663+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:44:48.679+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:44:48.727+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:48.727+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:44:48.765+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:44:48.765+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:44:48.801+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 6.427 seconds
+[2025-04-06T20:45:19.009+0000] {processor.py:157} INFO - Started process (PID=230) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:45:19.020+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:45:19.024+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:45:19.023+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:45:21.299+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:45:21.298+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:45:23.691+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:45:23.698+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:45:23.697+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:45:23.714+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:45:23.786+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:45:23.785+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:45:23.887+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:45:23.886+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:45:23.981+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 4.978 seconds
+[2025-04-06T20:51:07.330+0000] {processor.py:157} INFO - Started process (PID=162) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:51:07.334+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:51:07.341+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:07.339+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:51:12.869+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:12.869+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:51:15.969+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:51:15.974+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:15.974+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:51:15.995+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:51:16.294+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:16.294+0000] {manager.py:504} INFO - Created Permission View: can delete on DAG:great_expectations_validation
+[2025-04-06T20:51:16.312+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:16.311+0000] {manager.py:504} INFO - Created Permission View: can read on DAG:great_expectations_validation
+[2025-04-06T20:51:16.331+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:16.331+0000] {manager.py:504} INFO - Created Permission View: can edit on DAG:great_expectations_validation
+[2025-04-06T20:51:16.373+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:16.373+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:51:16.393+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:16.393+0000] {dag.py:2763} INFO - Creating ORM DAG for great_expectations_validation
+[2025-04-06T20:51:16.418+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:16.417+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:51:16.467+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 9.148 seconds
+[2025-04-06T20:51:47.568+0000] {processor.py:157} INFO - Started process (PID=183) to work on /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:51:47.574+0000] {processor.py:826} INFO - Processing file /opt/airflow/dags/data_validation_dag.py for tasks to queue
+[2025-04-06T20:51:47.577+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:47.577+0000] {dagbag.py:541} INFO - Filling up the DagBag from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:51:49.911+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:49.910+0000] {warnings.py:110} WARNING - /home/airflow/.local/lib/python3.7/site-packages/snowflake/connector/options.py:109: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  "pyarrow", installed_pyarrow_version, pandas_pyarrow_extra
+[2025-04-06T20:51:51.343+0000] {logging_mixin.py:150} INFO - Connection string: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
+[2025-04-06T20:51:51.347+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:51.346+0000] {warnings.py:110} WARNING - /opt/airflow/dags/data_validation_dag.py:372: RemovedInAirflow3Warning: Param `schedule_interval` is deprecated and will be removed in a future release. Please use `schedule` instead. 
+  catchup=False
+[2025-04-06T20:51:51.357+0000] {processor.py:836} INFO - DAG(s) dict_keys(['great_expectations_validation']) retrieved from /opt/airflow/dags/data_validation_dag.py
+[2025-04-06T20:51:51.397+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:51.397+0000] {dag.py:2742} INFO - Sync 1 DAGs
+[2025-04-06T20:51:51.434+0000] {logging_mixin.py:150} INFO - [2025-04-06T20:51:51.434+0000] {dag.py:3508} INFO - Setting next_dagrun for great_expectations_validation to 2025-04-06T00:00:00+00:00, run_after=2025-04-07T00:00:00+00:00
+[2025-04-06T20:51:51.466+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_validation_dag.py took 3.912 seconds

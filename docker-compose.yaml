@@ -27,6 +27,7 @@ services:
   airflow-postgres:
     image: postgres:14
     container_name: sport-advantages-airflow-postgres
+    restart: always
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
@@ -41,7 +42,8 @@ services:
   # Base de données PostgreSQL
   business-postgres:
     image: postgres:14
-    container_name: sport-advantages-postgres
+    container_name: business-postgres
+    restart: always
     environment:
       POSTGRES_USER: ${SPORT_POSTGRES_USER}
       POSTGRES_PASSWORD: ${SPORT_POSTGRES_PASSWORD}
@@ -52,6 +54,10 @@ services:
       - business_postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
       - ./postgres-config/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: >
+      postgres
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c shared_preload_libraries=pgoutput
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${SPORT_POSTGRES_USER} -d ${SPORT_POSTGRES_DB}"]
       interval: 10s
@@ -65,23 +71,26 @@ services:
     image: redpandadata/redpanda:latest
     container_name: sport-advantages-redpanda
     command:
-      - redpanda
-      - start
-      - --smp=1
-      - --memory=1G
-      - --reserve-memory=0M
-      - --overprovisioned
-      - --node-id=0
-      - --check=false
-      - --kafka-addr PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
-      - --advertise-kafka-addr PLAINTEXT://redpanda:9092,OUTSIDE://localhost:19092
-      - --rpc-addr 0.0.0.0:33145
-      - --advertise-rpc-addr redpanda:33145
+    - redpanda
+    - start
+      --smp=1
+      --memory=1G
+      --reserve-memory=0M
+      --overprovisioned
+      --node-id=0
+      --check=false
+      --kafka-addr PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      --advertise-kafka-addr PLAINTEXT://redpanda:9092,OUTSIDE://localhost:19092
+      --rpc-addr redpanda:33145
+      --advertise-rpc-addr redpanda:33145
+      --set redpanda.enable_transactions=true
+      --set redpanda.enable_idempotence=true
     ports:
       - "9092:9092"
       - "19092:19092"
+      - "33145:33145"
     volumes:
-      - redpanda:/var/lib/redpanda/data
+      - redpanda_data:/var/lib/redpanda/data
     depends_on:
       business-postgres:
         condition: service_healthy
@@ -120,41 +129,49 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - BOOTSTRAP_SERVERS=redpanda:9092
+      - CONNECT_REST_ADVERTISED_HOST_NAME=debezium
       - GROUP_ID=${DEBEZIUM_GROUP_ID}
+      - BOOTSTRAP_SERVERS=redpanda:9092
       - CONFIG_STORAGE_TOPIC=${DEBEZIUM_CONFIG_STORAGE_TOPIC}
       - OFFSET_STORAGE_TOPIC=${DEBEZIUM_OFFSET_STORAGE_TOPIC}
       - STATUS_STORAGE_TOPIC=${DEBEZIUM_STATUS_STORAGE_TOPIC}
+      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
     healthcheck: 
-      test: ["CMD-SHELL", "curl -s -f http://localhost:8083/connectors > /dev/null || exit 1"]
-      interval: 5s
-      timeout: 10s
-      retries: 10
+      test: ["CMD-SHELL", "curl -f http://debezium:8083/connectors"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
     command: >
       sh -c "
         /docker-entrypoint.sh start &
-        until curl -X POST http://localhost:8083/connectors -H 'Content-Type: application/json' -d '{
-          \"name\": \"sport-advantages-postgres-connector\",
-          \"config\": {
-            \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",
-            \"database.hostname\": \"business-postgres\",
-            \"database.port\": \"${SPORT_POSTGRES_PORT}\",
-            \"database.user\": \"${SPORT_POSTGRES_USER}\",
-            \"database.password\": \"${SPORT_POSTGRES_PASSWORD}\",
-            \"database.dbname\": \"${SPORT_POSTGRES_DB}\",
-            \"database.server.name\": \"sport-advantages\",
-            \"table.include.list\": \"sport_advantages.sport_activities\",
-            \"plugin.name\": \"pgoutput\",
-            \"topic.prefix\" : \"sport\",
-            \"snapshot.mode\": \"initial\"
-          }
-        }'; do
-          sleep 2
-        done &&
+        for i in {1..10}; do
+          if curl -s -f http://localhost:8083/; then
+            curl -X POST http://localhost:8083/connectors -H 'Content-Type: application/json' -d '{
+              \"name\": \"sport-advantages-postgres-connector\",
+              \"config\": {
+                \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",
+                \"database.hostname\": \"business-postgres\",
+                \"database.port\": \"5432\",
+                \"database.user\": \"${SPORT_POSTGRES_USER}\",
+                \"database.password\": \"${SPORT_POSTGRES_PASSWORD}\",
+                \"database.dbname\": \"${SPORT_POSTGRES_DB}\",
+                \"database.server.name\": \"sport-advantages\",
+                \"table.include.list\": \"sport_advantages.sport_activities\",
+                \"plugin.name\": \"pgoutput\",
+                \"topic.prefix\": \"sport\",
+                \"snapshot.mode\": \"initial\"
+              }
+            }' && break;
+          fi
+          sleep $((2 * i)) # Backoff exponentiel (2, 4, 6,... secondes)
+        done
         tail -f /dev/null"
     networks:
       - sport_network
 
+  # Pour valider les données de transport et importation de données salariés 
   init-db-commute-validation:
     build:
       context: ./commute_validation
@@ -163,7 +180,6 @@ services:
     depends_on:
       business-postgres:
         condition: service_healthy
-
     volumes:
       - ./commute_validation:/app
     environment:
@@ -197,8 +213,99 @@ services:
       - DB_NAME=${SPORT_POSTGRES_DB}
     networks:
       - sport_network
+  
+  spark-master:
+    image: bitnami/spark:3.2.3
+    container_name: sport-advantages-spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+    volumes:
+      - spark_master_data:/recovery
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 1g
+    cpus: 1.0
+    ports:
+      - "8090:8080"
+      - "7077:7077"
+    networks:
+      - sport_network
+   
+  # Spark Worker
+  spark-worker:
+    image: bitnami/spark:3.2.3
+    container_name: sport-advantages-spark-worker
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_WORKER_MEMORY=2g
+      - SPARK_WORKER_CORES=2
+    mem_limit: 2g
+    cpus: 2.0
+    networks:
+      - sport_network
 
-# Airflow Webserver
+  scala-runner:
+    build:
+      context: ./spark
+      dockerfile: Dockerfile
+    container_name: sport-advantages-scala-runner
+    environment:
+      - KAFKA_SERVERS=redpanda:9092
+      - TOPIC_NAME=${DEBEZIUM_OFFSET_STORAGE_TOPIC}
+      - DB_HOST=${SPORT_POSTGRES_HOST}
+      - DB_USER=${SPORT_POSTGRES_USER}
+      - DB_PASSWORD=${SPORT_POSTGRES_PASSWORD}
+      - DB_NAME=${SPORT_POSTGRES_DB}
+      - DB_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+    depends_on:
+      - spark-master
+      - debezium
+      - minio
+      - minio-init
+    volumes:
+      - ./spark:/scripts
+      - delta_volume:/data
+    networks:
+      - sport_network
+
+  # Minio comme stockage compatible S3 pour Delta Lake
+  minio:
+    image: minio/minio
+    container_name: sport-advantages-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - sport_network
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (mc config host add myminio http://minio:9000 minioadmin minioadmin) do echo 'Waiting for MinIO...' && sleep 1; done;
+      mc mb myminio/delta-tables --ignore-existing;
+      exit 0;
+      "
+    networks:
+      - sport_network
+
+  # Airflow Webserver
   airflow-webserver:
     <<: *airflow-common
     container_name: sport-advantages-airflow-webserver
@@ -253,6 +360,8 @@ services:
           --role Admin \
           --email admin@example.com
     restart: on-failure
+    depends_on:
+      - airflow-postgres
     networks:
       - sport_network
 
@@ -260,7 +369,9 @@ volumes:
   business_postgres_data:
   airflow_postgres_data:
   minio_data:
-  redpanda:
+  redpanda_data:
+  spark_master_data:
+  delta_volume:
 
 networks:
   sport_network:
