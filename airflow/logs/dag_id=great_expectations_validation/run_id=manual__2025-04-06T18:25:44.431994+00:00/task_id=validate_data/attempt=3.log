@@ -1,146 +1,0 @@
-[2025-04-06T18:30:09.554+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T18:25:44.431994+00:00 [queued]>
-[2025-04-06T18:30:09.568+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T18:25:44.431994+00:00 [queued]>
-[2025-04-06T18:30:09.569+0000] {taskinstance.py:1308} INFO - Starting attempt 3 of 4
-[2025-04-06T18:30:09.591+0000] {taskinstance.py:1327} INFO - Executing <Task(PythonOperator): validate_data> on 2025-04-06 18:25:44.431994+00:00
-[2025-04-06T18:30:09.601+0000] {standard_task_runner.py:57} INFO - Started process 3773 to run task
-[2025-04-06T18:30:09.635+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'great_expectations_validation', 'validate_data', 'manual__2025-04-06T18:25:44.431994+00:00', '--job-id', '15', '--raw', '--subdir', 'DAGS_FOLDER/data_validation_dag.py', '--cfg-path', '/tmp/tmpi5cab62f']
-[2025-04-06T18:30:09.641+0000] {standard_task_runner.py:85} INFO - Job 15: Subtask validate_data
-[2025-04-06T18:30:09.984+0000] {task_command.py:410} INFO - Running <TaskInstance: great_expectations_validation.validate_data manual__2025-04-06T18:25:44.431994+00:00 [running]> on host 6f966d9d4c8d
-[2025-04-06T18:30:10.185+0000] {taskinstance.py:1547} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='great_expectations_validation' AIRFLOW_CTX_TASK_ID='validate_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-06T18:25:44.431994+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-06T18:25:44.431994+00:00'
-[2025-04-06T18:30:10.187+0000] {logging_mixin.py:150} INFO - 🔍 Démarrage de la validation Great Expectations
-[2025-04-06T18:30:10.188+0000] {logging_mixin.py:150} INFO - Connection string pour GE: postgresql://sportadvantagehr:sportpassword@business-postgres:5432/sportadvantages
-[2025-04-06T18:30:10.191+0000] {util.py:2007} INFO - Could not find local context root directory
-[2025-04-06T18:30:10.193+0000] {base.py:2134} INFO - Created temporary directory '/tmp/tmpv2dgnbr6' for ephemeral docs site
-[2025-04-06T18:30:10.196+0000] {abstract_data_context.py:5575} INFO - EphemeralDataContext has not implemented `_load_fluent_config()` returning empty `GxConfig`
-[2025-04-06T18:30:10.197+0000] {config.py:185} INFO - Loading 'datasources' ->
-[]
-[2025-04-06T18:30:10.246+0000] {logging_mixin.py:150} INFO - ✅ Contexte GE initialisé
-[2025-04-06T18:30:10.247+0000] {logging_mixin.py:150} INFO - Ajout de la source PostgreSQL...
-[2025-04-06T18:30:10.347+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
-[2025-04-06T18:30:10.388+0000] {logging_mixin.py:150} INFO - ✅ Source PostgreSQL ajoutée
-[2025-04-06T18:30:10.389+0000] {logging_mixin.py:150} INFO - Connexion à la base de données pour vérifier la table...
-[2025-04-06T18:30:10.390+0000] {logging_mixin.py:150} INFO - Paramètres de connexion GE: host=business-postgres, port=5432, user=sportadvantagehr, database=sportadvantages
-[2025-04-06T18:30:10.428+0000] {logging_mixin.py:150} INFO - Schémas disponibles: [('pg_toast',), ('pg_catalog',), ('public',), ('information_schema',), ('sport_advantages',), ('pg_temp_4',), ('pg_toast_temp_4',)]
-[2025-04-06T18:30:10.431+0000] {logging_mixin.py:150} INFO - Le schéma sport_advantages existe: True
-[2025-04-06T18:30:10.438+0000] {logging_mixin.py:150} INFO - Tables dans le schéma sport_advantages: [('employees',), ('commute_validations',), ('sport_activities',), ('sport_advantages',), ('employees_masked',)]
-[2025-04-06T18:30:10.440+0000] {logging_mixin.py:150} INFO - La table sport_activities existe: True
-[2025-04-06T18:30:10.466+0000] {logging_mixin.py:150} INFO - Colonnes de la table: [('id', 'integer'), ('id_employee', 'integer'), ('start_datetime', 'timestamp without time zone'), ('sport_type', 'character varying'), ('distance', 'integer'), ('activity_duration', 'integer'), ('comment', 'character varying')]
-[2025-04-06T18:30:10.468+0000] {logging_mixin.py:150} INFO - Nombre de lignes dans la table: 2907
-[2025-04-06T18:30:10.469+0000] {logging_mixin.py:150} INFO - Échantillon de données: [(1, 70643, datetime.datetime(2024, 4, 5, 11, 0, 3), 'Équitation', None, 3918, None), (2, 34382, datetime.datetime(2024, 4, 5, 14, 45, 38), 'Musculation', None, 5035, None), (3, 50316, datetime.datetime(2024, 4, 5, 14, 40, 45), 'Judo', None, 3254, None), (4, 19773, datetime.datetime(2024, 4, 6, 19, 19, 24), 'Corde à sauter', None, 5696, None), (5, 99401, datetime.datetime(2024, 4, 6, 10, 28, 43), 'Randonnée', 6770, 6449, None)]
-[2025-04-06T18:30:10.470+0000] {logging_mixin.py:150} INFO - Ajout de l'asset de table...
-[2025-04-06T18:30:10.485+0000] {logging_mixin.py:150} INFO - ✅ Asset de table ajouté avec succès
-[2025-04-06T18:30:10.486+0000] {logging_mixin.py:150} INFO - Construction de la requête batch...
-[2025-04-06T18:30:10.489+0000] {logging_mixin.py:150} INFO - ✅ Requête batch construite
-[2025-04-06T18:30:10.490+0000] {logging_mixin.py:150} INFO - Configuration de la suite d'attente...
-[2025-04-06T18:30:10.507+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente configurée
-[2025-04-06T18:30:10.512+0000] {logging_mixin.py:150} INFO - Création du validator...
-[2025-04-06T18:30:10.516+0000] {fluent_base_model.py:257} INFO - PostgresDatasource.dict() - substituting config values
-[2025-04-06T18:30:10.572+0000] {batch_filter.py:250} INFO - batch_slice: None was parsed to: slice(0, None, None)
-[2025-04-06T18:30:10.580+0000] {logging_mixin.py:150} INFO - ✅ Validator créé
-[2025-04-06T18:30:10.582+0000] {logging_mixin.py:150} INFO - Aperçu des données:
-[2025-04-06T18:30:10.607+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/1 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.608+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/1 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.653+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 22.25it/s]
-[2025-04-06T18:30:10.655+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 21.66it/s]
-[2025-04-06T18:30:10.656+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 21.23it/s]
-[2025-04-06T18:30:10.657+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 1/1 [00:00<00:00, 20.56it/s]
-[2025-04-06T18:30:10.724+0000] {logging_mixin.py:150} INFO -    id  id_employee      start_datetime  ... distance  activity_duration  comment
-0   1        70643 2024-04-05 11:00:03  ...      NaN               3918     None
-1   2        34382 2024-04-05 14:45:38  ...      NaN               5035     None
-2   3        50316 2024-04-05 14:40:45  ...      NaN               3254     None
-3   4        19773 2024-04-06 19:19:24  ...      NaN               5696     None
-4   5        99401 2024-04-06 10:28:43  ...   6770.0               6449     None
-
-[5 rows x 7 columns]
-[2025-04-06T18:30:10.726+0000] {logging_mixin.py:150} INFO - Ajout des attentes...
-[2025-04-06T18:30:10.732+0000] {warnings.py:110} WARNING - /home/***/.local/lib/python3.7/site-packages/great_expectations/expectations/expectation.py:1464: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
-  UserWarning,
-
-[2025-04-06T18:30:10.760+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.762+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.780+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 106.31it/s]
-[2025-04-06T18:30:10.787+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 79.32it/s] 
-[2025-04-06T18:30:10.792+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 130.33it/s]
-[2025-04-06T18:30:10.799+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 108.07it/s]
-[2025-04-06T18:30:10.800+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 128.58it/s]
-[2025-04-06T18:30:10.805+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 115.17it/s]
-[2025-04-06T18:30:10.810+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 143.78it/s]
-[2025-04-06T18:30:10.814+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 133.82it/s]
-[2025-04-06T18:30:10.820+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 137.66it/s]
-[2025-04-06T18:30:10.823+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 131.80it/s]
-[2025-04-06T18:30:10.824+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 127.95it/s]
-[2025-04-06T18:30:10.825+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 126.18it/s]
-[2025-04-06T18:30:10.857+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.858+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/8 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.864+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 317.51it/s]
-[2025-04-06T18:30:10.870+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  25%|##5       | 2/8 [00:00<00:00, 167.44it/s]
-[2025-04-06T18:30:10.873+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 259.38it/s]
-[2025-04-06T18:30:10.880+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  50%|#####     | 4/8 [00:00<00:00, 184.72it/s]
-[2025-04-06T18:30:10.882+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 210.22it/s]
-[2025-04-06T18:30:10.886+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  62%|######2   | 5/8 [00:00<00:00, 177.36it/s]
-[2025-04-06T18:30:10.891+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 215.12it/s]
-[2025-04-06T18:30:10.894+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  88%|########7 | 7/8 [00:00<00:00, 196.77it/s]
-[2025-04-06T18:30:10.898+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 201.06it/s]
-[2025-04-06T18:30:10.900+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 189.49it/s]
-[2025-04-06T18:30:10.901+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 185.90it/s]
-[2025-04-06T18:30:10.902+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 8/8 [00:00<00:00, 182.31it/s]
-[2025-04-06T18:30:10.946+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.948+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
-[2025-04-06T18:30:10.953+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 345.44it/s]
-[2025-04-06T18:30:10.963+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 133.63it/s]
-[2025-04-06T18:30:10.966+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 221.49it/s]
-[2025-04-06T18:30:10.975+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 146.35it/s]
-[2025-04-06T18:30:10.978+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 198.90it/s]
-[2025-04-06T18:30:10.986+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 158.21it/s]
-[2025-04-06T18:30:10.992+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 201.97it/s]
-[2025-04-06T18:30:10.997+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 181.74it/s]
-[2025-04-06T18:30:11.003+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 198.05it/s]
-[2025-04-06T18:30:11.008+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 182.20it/s]
-[2025-04-06T18:30:11.009+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 178.29it/s]
-[2025-04-06T18:30:11.011+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 174.24it/s]
-[2025-04-06T18:30:11.058+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
-[2025-04-06T18:30:11.059+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:   0%|          | 0/11 [00:00<?, ?it/s]
-[2025-04-06T18:30:11.065+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 351.06it/s]
-[2025-04-06T18:30:11.074+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  18%|#8        | 2/11 [00:00<00:00, 129.83it/s]
-[2025-04-06T18:30:11.078+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 211.92it/s]
-[2025-04-06T18:30:11.087+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  36%|###6      | 4/11 [00:00<00:00, 140.19it/s]
-[2025-04-06T18:30:11.090+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 190.48it/s]
-[2025-04-06T18:30:11.099+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  55%|#####4    | 6/11 [00:00<00:00, 150.87it/s]
-[2025-04-06T18:30:11.104+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 198.23it/s]
-[2025-04-06T18:30:11.111+0000] {logging_mixin.py:150} WARNING - Calculating Metrics:  82%|########1 | 9/11 [00:00<00:00, 172.68it/s]
-[2025-04-06T18:30:11.117+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 187.57it/s]
-[2025-04-06T18:30:11.122+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 175.41it/s]
-[2025-04-06T18:30:11.122+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 172.81it/s]
-[2025-04-06T18:30:11.124+0000] {logging_mixin.py:150} WARNING - Calculating Metrics: 100%|##########| 11/11 [00:00<00:00, 169.64it/s]
-[2025-04-06T18:30:11.131+0000] {logging_mixin.py:150} INFO - ✅ Attentes ajoutées
-[2025-04-06T18:30:11.132+0000] {logging_mixin.py:150} INFO - Sauvegarde de la suite d'attente...
-[2025-04-06T18:30:11.134+0000] {validator.py:1443} INFO - 	4 expectation(s) included in expectation_suite.
-[2025-04-06T18:30:11.144+0000] {logging_mixin.py:150} INFO - ✅ Suite d'attente sauvegardée
-[2025-04-06T18:30:11.146+0000] {logging_mixin.py:150} INFO - Création du checkpoint...
-[2025-04-06T18:30:11.147+0000] {logging_mixin.py:150} INFO - ✅ Checkpoint créé
-[2025-04-06T18:30:11.148+0000] {logging_mixin.py:150} INFO - Ajout du checkpoint au contexte...
-[2025-04-06T18:30:11.155+0000] {logging_mixin.py:150} INFO - ✅ Checkpoint ajouté au contexte
-[2025-04-06T18:30:11.156+0000] {logging_mixin.py:150} INFO - Exécution de la validation...
-[2025-04-06T18:30:11.174+0000] {taskinstance.py:1824} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 181, in execute
-    return_value = self.execute_callable()
-  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 198, in execute_callable
-    return self.python_callable(*self.op_args, **self.op_kwargs)
-  File "/opt/airflow/dags/data_validation_dag.py", line 354, in run_ge_validation
-    result = context.run_checkpoint(checkpoint_name=checkpoint_name)
-  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/core/usage_statistics/usage_statistics.py", line 318, in usage_statistics_wrapped_method
-    result = func(*args, **kwargs)
-  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2288, in run_checkpoint
-    **kwargs,
-  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2313, in _run_checkpoint
-    id=id,
-  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2163, in get_checkpoint
-    name=name, id=id
-  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/checkpoint_store.py", line 175, in get_checkpoint
-    message="Attempt to instantiate LegacyCheckpoint with insufficient and/or incorrect arguments."
-great_expectations.exceptions.exceptions.CheckpointError: Attempt to instantiate LegacyCheckpoint with insufficient and/or incorrect arguments.
-[2025-04-06T18:30:11.238+0000] {taskinstance.py:1350} INFO - Marking task as UP_FOR_RETRY. dag_id=great_expectations_validation, task_id=validate_data, execution_date=20250406T182544, start_date=20250406T183009, end_date=20250406T183011
-[2025-04-06T18:30:11.259+0000] {standard_task_runner.py:109} ERROR - Failed to execute job 15 for task validate_data (Attempt to instantiate LegacyCheckpoint with insufficient and/or incorrect arguments.; 3773)
-[2025-04-06T18:30:11.285+0000] {local_task_job_runner.py:225} INFO - Task exited with return code 1
-[2025-04-06T18:30:11.317+0000] {taskinstance.py:2653} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -44,21 +44,6 @@ CREATE TABLE sport_advantages.sport_activities(
     FOREIGN KEY (id_employee) REFERENCES sport_advantages.employees(id_employee)
 );
 
--- Table pour les avantages calculés
--- CREATE TABLE IF NOT EXISTS sport_advantages.sport_advantages (
---    id SERIAL PRIMARY KEY,
---    id_employee INT NOT NULL,
---    calculation_date DATE NOT NULL,
---    sport_bonus_percentage NUMERIC(5, 2) DEFAULT 0,
---    sport_bonus_amount NUMERIC(10, 2) DEFAULT 0,
---    wellness_days_earned INTEGER DEFAULT 0,
---    total_activities INTEGER DEFAULT 0,
---    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
---    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
---    FOREIGN KEY (id_employee) REFERENCES sport_advantages.employees(id_employee),
---    UNIQUE (id_employee, calculation_date)
---);
-
 ---------------------------- Configuration pour Debezium ----------------------------------
 -- Création de la table de publication pour Debezium
 CREATE PUBLICATION sport_advantages_publication FOR TABLE sport_advantages.sport_activities;
@@ -84,11 +69,19 @@ GRANT reporting TO sportadvantagebiuser;
 -- Création de view pour masquer les salaires pour utilisateurs bi
 CREATE VIEW sport_advantages.employees_masked AS
 SELECT 
-    id_employee, first_name, last_name, hire_date, business_unity, constract_type, paid_leaved_days,
+    id_employee, hire_date, gross_salary, business_unity, constract_type, paid_leaved_days,
     CASE WHEN current_user = 'sportadvantagebiuser' 
         THEN NULL 
-    ELSE gross_salary 
-    END AS gross_salary
+    ELSE first_name 
+    END AS first_name,
+    CASE WHEN current_user = 'sportadvantagebiuser' 
+        THEN NULL 
+    ELSE last_name 
+    END AS last_name,
+    CASE WHEN current_user = 'sportadvantagebiuser' 
+        THEN NULL 
+    ELSE address 
+    END AS address
 FROM sport_advantages.employees;
 
 

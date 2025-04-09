@@ -1,0 +1,8 @@
+great-expectations
+sqlalchemy
+psycopg2-binary
+urllib3
+apache-airflow-providers-cncf-kubernetes
+apache-airflow-providers-apache-spark==4.1.0
+pyspark==3.2.3 
+delta-spark==1.2.0
