@@ -87,3 +87,4 @@ FROM sport_advantages.employees;
 
 -- Donner accès uniquement à la vue pour powerbi_user
 GRANT SELECT ON sport_advantages.employees_masked TO sportadvantagebiuser;
+GRANT ALL PRIVILEGES ON sport_advantages.employees_masked TO sportadvantagehr;

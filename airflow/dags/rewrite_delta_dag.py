@@ -10,7 +10,6 @@ default_args = {
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
-    'start_date': datetime(2025, 4, 8),
     'retry_delay': timedelta(minutes=2)
 }
 
@@ -34,6 +33,7 @@ read_delta_task = SparkSubmitOperator(
         '--output_bucket', 'final-tables'
     ],
     conf={
+        'spark.master': 'spark://spark-master:7077',
         'spark.sql.extensions': 'io.delta.sql.DeltaSparkSessionExtension',
         'spark.sql.catalog.spark_catalog': 'org.apache.spark.sql.delta.catalog.DeltaCatalog',
         'spark.hadoop.fs.s3a.endpoint': 'http://minio:9000',
@@ -45,13 +45,12 @@ read_delta_task = SparkSubmitOperator(
         'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
         'spark.jars.packages': 'io.delta:delta-core_2.12:1.2.0'
     },
-    packages='io.delta:delta-core_2.12:1.2.0,org.apache.hadoop:hadoop-aws:3.3.1',
-    exclude_packages='com.amazonaws:aws-java-sdk-bundle',
+    jars="/opt/airflow/jars/aws-java-sdk-bundle-1.11.901.jar,/opt/airflow/jars/hadoop-aws-3.3.1.jar,/opt/airflow/jars/delta-core_2.12-1.2.0.jar,/opt/airflow/jars/postgresql-42.5.1.jar",
+    # exclude_packages='com.amazonaws:aws-java-sdk-bundle',
     verbose=True,
     dag=dag,
 )
 
 
-# Je remarque aussi qu'il manque une instruction à la fin
-# Définir l'ordre des tâches
+# Définir la tâche
 read_delta_task
