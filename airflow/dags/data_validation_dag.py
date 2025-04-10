@@ -369,7 +369,8 @@ with DAG(
     start_date=datetime(2025, 4, 6), 
     schedule_interval="@daily",  
     default_args=default_args,
-    catchup=False
+    catchup=False,
+    tags=['SQL table', 'random activité sportive']
 ) as dag:
     # Créer une tâche pour vérifier l'existence de la table
     check_table_task = PythonOperator(
