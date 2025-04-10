@@ -3,6 +3,8 @@ import os
 from typing import Dict, Tuple
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import avg, count
+import boto3
+from botocore.client import Config
 
 
 def create_spark_session() -> SparkSession:
@@ -11,7 +13,16 @@ def create_spark_session() -> SparkSession:
     Returns:
         SparkSession: Session Spark configurée
     """
-    spark = SparkSession.builder.appName("JoinDeltaWithSQL").getOrCreate()
+    spark = SparkSession.builder.appName("JoinDeltaWithSQL") \
+            .config("spark.master", "spark://spark-master:7077")  \
+            .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
+            .config("spark.hadoop.fs.s3a.access.key", os.environ.get("MINIO_ROOT_USER"))  \
+            .config("spark.hadoop.fs.s3a.secret.key", os.environ.get("MINIO_ROOT_PASSWORD")) \
+            .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+            .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
+            .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+            .config("spark.jars.packages", "org.postgresql:postgresql:42.5.1") \
+            .getOrCreate()
 
     # Afficher la version de Spark pour le debug
     print(f"Version de Spark: {spark.version}")
@@ -59,11 +70,19 @@ def read_sql_table(spark: SparkSession, table_name: str) -> DataFrame:
         Exception: Si la lecture de la table SQL échoue
     """
     # Récupérer les variables d'environnement
-    postgres_user = os.environ.get("SPORT_POSTGRES_USER")
-    postgres_password = os.environ.get("SPORT_POSTGRES_PASSWORD")
-    postgres_host = os.environ.get("SPORT_POSTGRES_HOST", "business-postgres")  # Valeur par défaut
-    postgres_port = os.environ.get("SPORT_POSTGRES_PORT", "5432")  # Valeur par défaut
-    postgres_db = os.environ.get("SPORT_POSTGRES_DB")
+    postgres_user = os.environ.get("DB_USER")
+    if not postgres_user:
+        raise ValueError("DB_USER environment variable is not set")
+
+    postgres_password = os.environ.get("DB_PASSWORD", "sportpassword")
+    if not postgres_password:
+        raise ValueError("DB_PASSWORD environment variable is not set")
+    
+    postgres_host = os.environ.get("DB_HOST", "business-postgres")
+    postgres_port = os.environ.get("DB_PORT", "5432") 
+    postgres_db = os.environ.get("DB_NAME")
+    if not postgres_db:
+        raise ValueError("DB_NAME environment variable is not set")
 
     url = f"jdbc:postgresql://{postgres_host}:{postgres_port}/{postgres_db}"
 
@@ -74,11 +93,21 @@ def read_sql_table(spark: SparkSession, table_name: str) -> DataFrame:
     }
 
     try:
+        # Vérifier que les propriétés ne contiennent pas de valeurs nulles
+        for key, value in properties.items():
+            if value is None:
+                raise ValueError(f"La propriété JDBC '{key}' a une valeur nulle")
+            
         df = spark.read.jdbc(url, table_name, properties=properties)
         print(f"Nombre de lignes lues: {df.count()}")
         return df
     except Exception as e:
         print(f"Erreur lors de la lecture de la table SQL: {e}")
+        print(f"Détails de la connexion (sans mot de passe):")
+        print(f"  URL: {url}")
+        print(f"  User: {postgres_user}")
+        print(f"  Table: {table_name}")
+        print(f"  Driver: {properties.get('driver')}")
         raise
 
 
@@ -132,6 +161,44 @@ def ensure_compatible_types(employee_df: DataFrame, validation_df: DataFrame,
     return employee_df, validation_df, activity_df
 
 
+def ensure_bucket_exists(bucket_name: str) -> None:
+    """Vérifie si un bucket existe dans MinIO et le crée s'il n'existe pas
+    
+    Args:
+        bucket_name (str): Nom du bucket à vérifier/créer
+    """
+    # Récupérer les variables d'environnement
+    endpoint_url = "http://minio:9000"
+    access_key = os.environ.get("MINIO_ROOT_USER")
+    secret_key = os.environ.get("MINIO_ROOT_PASSWORD")
+    
+    if not access_key or not secret_key:
+        print("⚠️ Impossible de vérifier/créer le bucket: variables d'environnement manquantes")
+        return
+    
+    try:
+        # Création du client S3 compatible avec MinIO
+        s3_client = boto3.client(
+            's3',
+            endpoint_url=endpoint_url,
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            config=Config(signature_version='s3v4'),
+            region_name='us-east-1'  # Valeur arbitraire, MinIO n'utilise pas les régions
+        )
+        
+        # Vérifier si le bucket existe
+        try:
+            s3_client.head_bucket(Bucket=bucket_name)
+            print(f"✅ Le bucket '{bucket_name}' existe déjà")
+        except:
+            # Créer le bucket s'il n'existe pas
+            s3_client.create_bucket(Bucket=bucket_name)
+            print(f"✅ Le bucket '{bucket_name}' a été créé avec succès")
+    except Exception as e:
+        print(f"❌ Erreur lors de la vérification/création du bucket: {e}")
+
+
 def save_to_delta(df: DataFrame, output_bucket: str, path_suffix: str = "joined_data") -> None:
     """Sauvegarde un DataFrame dans une table Delta
     
@@ -140,11 +207,28 @@ def save_to_delta(df: DataFrame, output_bucket: str, path_suffix: str = "joined_
         output_bucket (str): Nom du bucket de sortie
         path_suffix (str, optional): Suffixe du chemin. Par défaut "joined_data"
     """
+    
     output_path = f"s3a://{output_bucket}/{path_suffix}"
     print(f"Sauvegarde des données vers: {output_path}")
     
-    df.write.format("delta").mode("append").save(output_path)
-    print(f"Données sauvegardées avec succès!")
+    # S'assurer que le bucket existe avant d'essayer d'écrire dedans
+    ensure_bucket_exists(output_bucket)
+    
+    try:
+        # Vérifier si le bucket existe (implicitement via une requête)
+        df.write.format("delta") \
+            .mode("overwrite") \
+            .option("overwriteSchema", "true") \
+            .save(output_path)
+        print(f"Données sauvegardées avec succès!")
+    except Exception as e:
+        print(f"Erreur lors de la sauvegarde des données: {e}")
+        
+        # Si le bucket n'existe pas, suggérer de le créer
+        if "NoSuchBucket" in str(e):
+            print(f"Le bucket '{output_bucket}' n'existe pas dans MinIO. Assurez-vous de le créer avant d'exécuter ce script.")
+        
+        raise
 
 
 def main() -> None:
@@ -158,14 +242,20 @@ def main() -> None:
     # Créer la session Spark
     spark = create_spark_session()
 
+    # S'assurer que les buckets d'entrée et de sortie existent
+    ensure_bucket_exists(args.input_bucket)
+    ensure_bucket_exists(args.output_bucket)
+    
     try:
         # Lire des données des activités sportives
         activity_df = read_delta_table(spark, args.input_bucket, args.table)
         print("Schéma des données sportives")
         activity_df.printSchema()
+
+        activity_df.show(5)
         
         # Lire les données de HR
-        employee_df = read_sql_table(spark, "sport_advantages.employees")
+        employee_df = read_sql_table(spark, "sport_advantages.employees_masked")
         print("Schéma des données salariés")
         employee_df.printSchema()
         
