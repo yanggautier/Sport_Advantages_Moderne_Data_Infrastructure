@@ -15,7 +15,7 @@ default_args = {
     'depends_on_past': False,
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 3,
+    'retries': 2,
     'retry_delay': timedelta(minutes=2),
 }
 
@@ -79,7 +79,7 @@ def check_table_exists():
             )
             
             if not schema_exists:
-                print(f"⚠️ Le schéma 'sport_advantages' n'existe pas. Tentative {attempt+1}/{max_retries}")
+                print(f"Le schéma 'sport_advantages' n'existe pas. Tentative {attempt+1}/{max_retries}")
                 if attempt < max_retries - 1:
                     time.sleep(retry_interval)
                     continue
@@ -106,7 +106,7 @@ def check_table_exists():
             )
             
             if not table_exists:
-                print(f"⚠️ La table 'sport_advantages.sport_activities' n'existe pas. Tentative {attempt+1}/{max_retries}")
+                print(f"La table 'sport_advantages.sport_activities' n'existe pas. Tentative {attempt+1}/{max_retries}")
                 # Créer le schéma et la table si nécessaire (à des fins de test)
                 if attempt < max_retries - 1:
                     print("Tentative de création du schéma et de la table...")
@@ -146,7 +146,7 @@ def check_table_exists():
                 else:
                     raise ValueError("La table 'sport_advantages.sport_activities' n'existe pas après plusieurs tentatives")
             
-            print("✅ La table 'sport_advantages.sport_activities' existe!")
+            print("La table 'sport_advantages.sport_activities' existe!")
             
             # Vérifie le contenu de la table
             sample_data = log_and_execute_query(
@@ -158,7 +158,7 @@ def check_table_exists():
             return True
             
         except Exception as e:
-            print(f"⚠️ Erreur lors de la vérification de la table: {str(e)}")
+            print(f"Erreur lors de la vérification de la table: {str(e)}")
             if attempt < max_retries - 1:
                 print(f"Nouvelle tentative dans {retry_interval} secondes...")
                 time.sleep(retry_interval)
@@ -176,12 +176,12 @@ def run_ge_validation():
     """ Exécuter validation de Great Expectations sur la table sport_activites."""
     import great_expectations as gx
 
-    print("🔍 Démarrage de la validation Great Expectations")
+    print("Démarrage de la validation Great Expectations")
     print(f"Connection string pour GE: {AIRFLOW_CONN_SPORT_ADVANTAGES_DB}")
     
     # Initialiser le contexte de Great Expectations
     context = gx.get_context()
-    print("✅ Contexte GE initialisé")
+    print("Contexte GE initialisé")
 
     # Ajouter la source PostgreSQL
     print("Ajout de la source PostgreSQL...")
@@ -189,7 +189,7 @@ def run_ge_validation():
         name="pg_datasource", 
         connection_string=AIRFLOW_CONN_SPORT_ADVANTAGES_DB
     )
-    print("✅ Source PostgreSQL ajoutée")
+    print("Source PostgreSQL ajoutée")
     
     # Vérification des méta-informations pour le débogage
     print("Connexion à la base de données pour vérifier la table...")
@@ -274,21 +274,21 @@ def run_ge_validation():
             schema_name="sport_advantages",
             table_name="sport_activities"
         )
-        print("✅ Asset de table ajouté avec succès")
+        print("Asset de table ajouté avec succès")
     except Exception as e:
-        print(f"⚠️ Erreur lors de l'ajout de l'asset de table: {e}")
+        print(f"Erreur lors de l'ajout de l'asset de table: {e}")
         raise
 
     # Création de requête batch pour la table
     print("Construction de la requête batch...")
     batch_request = pg_datasource.get_asset("sport_activities").build_batch_request()
-    print("✅ Requête batch construite")
+    print("Requête batch construite")
 
     # Créer ou configurer la suite d'attente 
     print("Configuration de la suite d'attente...")
     expectation_suite_name = "sport_activities_expectation_suite"
     context.add_or_update_expectation_suite(expectation_suite_name=expectation_suite_name)
-    print("✅ Suite d'attente configurée")
+    print("Suite d'attente configurée")
 
     # Créer le validator pour les données
     print("Création du validator...")
@@ -296,7 +296,7 @@ def run_ge_validation():
         batch_request=batch_request,
         expectation_suite_name=expectation_suite_name,
     )
-    print("✅ Validator créé")
+    print("Validator créé")
     
     print("Aperçu des données:")
     print(validator.head())
@@ -318,12 +318,12 @@ def run_ge_validation():
         include_minimum=True,
         missing_value_handling="ignore"
     )
-    print("✅ Attentes ajoutées")
+    print("Attentes ajoutées")
 
     # Sauvegarde de suite d'expectation
     print("Sauvegarde de la suite d'attente...")
     validator.save_expectation_suite(discard_failed_expectations=False)
-    print("✅ Suite d'attente sauvegardée")
+    print("Suite d'attente sauvegardée")
 
     # Créer le checkpoint AVANT de l'exécuter
     print("Création du checkpoint...")
@@ -345,7 +345,7 @@ def run_ge_validation():
 
     # Ajouter le checkpoint au contexte
     context.add_checkpoint(**checkpoint_config)
-    print("✅ Checkpoint créé")
+    print("Checkpoint créé")
 
     # Maintenant exécuter le checkpoint
     print("Exécution de la validation avec SimpleCheckpoint...")
@@ -360,7 +360,7 @@ def run_ge_validation():
     if not checkpoint_result["success"]:
         raise ValueError("Validation failed!")
     
-    print("✅ Validation réussie !")
+    print("Validation réussie !")
     return True
 
 # Définition de DAG Pipeline
@@ -370,6 +370,7 @@ with DAG(
     schedule_interval="@daily",  
     default_args=default_args,
     catchup=False,
+    max_active_runs=1,
     tags=['SQL table', 'random activité sportive']
 ) as dag:
     # Créer une tâche pour vérifier l'existence de la table
