@@ -288,8 +288,8 @@ services:
     container_name: sport-advantages-scala-runner
     environment:
       - KAFKA_SERVERS=redpanda:9092
-      - TOPIC_NAME=${DEBEZIUM_OFFSET_STORAGE_TOPIC}
-      # - TOPIC_NAME=sport.sport_advantages.sport_activities
+      # - TOPIC_NAME=${DEBEZIUM_OFFSET_STORAGE_TOPIC}
+      - TOPIC_NAME=sport.sport_advantages.sport_activities
       - DB_HOST=${SPORT_POSTGRES_HOST}
       - DB_USER=${SPORT_POSTGRES_USER}
       - DB_PASSWORD=${SPORT_POSTGRES_PASSWORD}
