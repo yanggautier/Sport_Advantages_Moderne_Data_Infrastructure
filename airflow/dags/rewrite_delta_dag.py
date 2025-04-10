@@ -19,6 +19,7 @@ dag = DAG(
     description='Lit les données d\'activité sportive depuis Delta Lake',
     start_date=datetime(2025,4,8),
     catchup=False,
+    max_active_runs=1,
     tags=['delta table', 'spark', 'activité sportive']
 )
 

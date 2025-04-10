@@ -99,7 +99,7 @@ try {
     .option("kafka.bootstrap.servers", bootstrapServers)
     .option("subscribe", topicName)
     .option("startingOffsets", "earliest")
-    .option("failOnDataLoss", "false")  // More resilient to topic issues
+    .option("failOnDataLoss", "false") 
     .load()
   
   println("Lecteur de flux Redpanda créé avec succès")
