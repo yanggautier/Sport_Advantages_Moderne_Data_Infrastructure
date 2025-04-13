@@ -5,6 +5,8 @@ CREATE SCHEMA IF NOT EXISTS sport_advantages;
 -- Configuration des autorisations
 ALTER SCHEMA sport_advantages OWNER TO sportadvantagehr;
 
+
+
 -- Table des employés
 CREATE TABLE sport_advantages.employees(
     id_employee INT PRIMARY KEY,

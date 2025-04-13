@@ -35,6 +35,7 @@ x-airflow-common: &airflow-common
     - sport_network
 
 services:
+ # BDD Postgresql pour Airflow
   airflow-postgres:
     image: postgres:14
     container_name: sport-advantages-airflow-postgres
@@ -229,6 +230,7 @@ services:
     networks:
       - sport_network
   
+  # Spark Master
   spark-master:
     image: bitnami/spark:3.2.3
     container_name: sport-advantages-spark-master
@@ -332,6 +334,7 @@ services:
     networks:
       - sport_network
 
+  # Initialisation de MinIO
   minio-init:
     image: minio/mc
     depends_on:
@@ -351,6 +354,7 @@ services:
     <<: *airflow-common
     container_name: sport-advantages-airflow-webserver
     command: webserver
+    restart: always
     depends_on:
       airflow-postgres:
         condition: service_healthy
@@ -410,6 +414,99 @@ services:
     networks:
       - sport_network
 
+  # Trino - SQL query engine 
+  trino:
+    build:
+      context: ./trino
+      dockerfile: Dockerfile
+    container_name: sport-advantages-trino
+    hostname: trino
+    ports:
+      - "8100:8080"
+    volumes:
+      - ./trino/etc:/etc/trino
+      # - ./trino/plugin/delta:/usr/lib/trino/plugin/delta
+    environment:
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - SPORT_POSTGRES_DB=${SPORT_POSTGRES_DB}
+      - SPORT_POSTGRES_USER=${SPORT_POSTGRES_USER}
+      - SPORT_POSTGRES_INTERNAL_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
+      - SPORT_POSTGRES_PASSWORD=${SPORT_POSTGRES_PASSWORD}
+    depends_on:
+      - minio
+      - business-postgres
+    networks:
+      sport_network:
+        aliases:
+          - trino
+    
+ # Service PostgreSQL pour les métadonnées de Superset
+  superset-postgres:
+    image: postgres:14
+    container_name: superset-postgres
+    environment:
+      - POSTGRES_USER=superset
+      - POSTGRES_PASSWORD=superset
+      - POSTGRES_DB=superset
+    ports:
+      - "${SUPERSET_POSTGRES_PORT}:5432"
+    volumes:
+      - superset_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    networks:
+      - sport_network
+
+  superset:
+    build:
+      context: ./superset
+      dockerfile: Dockerfile
+    container_name: sport-advantages-superset
+    restart: always
+    depends_on:
+      superset-postgres:
+        condition: service_healthy
+      trino:
+        condition: service_started
+    environment:
+      - SUPERSET_SECRET_KEY=ThisIsAVeryLongAndSecureKeyForOurSupersetInstance1234567890
+      - SUPERSET_DATABASE_URI=postgresql+psycopg2://superset:superset@superset-postgres:5432/superset
+      - POSTGRES_USER=${SPORT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${SPORT_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${SPORT_POSTGRES_DB}
+      - POSTGRES_HOST=business-postgres
+      - POSTGRES_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - PYTHONPATH=/app
+      - FLASK_APP=superset.app:create_app()
+      - FLASK_ENV=production
+      - SUPERSET_ENV=development
+      - TRINO_HOST=trino
+      - TRINO_PORT=8080
+      - TRINO_USER=trino
+      - TRINO_CATALOG=postgresql,minio
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./superset/superset_data:/app/superset_home
+      - ./superset/superset_config.py:/app/superset/superset_config.py
+      - ./superset/docker/docker-entrypoint.sh:/app/docker-entrypoint.sh
+      - ./superset/docker-init.d:/app/docker-init.d
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - sport_network
+
 volumes:
   business_postgres_data:
   airflow_postgres_data:
@@ -417,7 +514,9 @@ volumes:
   redpanda_data:
   spark_master_data:
   delta_volume:
+  superset_postgres_data:
 
 networks:
   sport_network:
     driver: bridge
+    name: sport_network
