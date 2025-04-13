@@ -16,3 +16,6 @@ airflow/logs
 .bsp
 .metals
 .scala-build
+.DS_Store
+*.pdf
+trino/plugins/trino-delta-lake-413.zip
