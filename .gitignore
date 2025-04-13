@@ -19,3 +19,4 @@ airflow/logs
 .DS_Store
 *.pdf
 trino/plugins/trino-delta-lake-413.zip
+trino/plugins/delta/*
