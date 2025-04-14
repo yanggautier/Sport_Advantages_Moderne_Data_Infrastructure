@@ -154,12 +154,12 @@ def sport_activity_generator() -> List[Dict[str, str]]:
     logger.info(f"Date de début {start_day.strftime('%d/%m/%Y %H:%M:%S')}")
     logger.info(f"Date de fin {end_day.strftime('%d/%m/%Y %H:%M:%S')}")
 
-    # Récupérer la liste des id des salariés dans la base de données
-    id_list = get_employee_ids(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
-    ids_nb = len(id_list)
+    # Récupérer la liste des salariés dans la base de données
+    activity_list = get_employee_ids(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+    ids_nb = len(activity_list)
 
     if ids_nb:
-        logger.info(f'{len(id_list)} salariés trouvés dans la base de données.')
+        logger.info(f'{len(activity_list)} salariés trouvés dans la base de données.')
     else:
         logger.error('Aucun salarié trouvé dans la base de données.')
 
@@ -169,8 +169,8 @@ def sport_activity_generator() -> List[Dict[str, str]]:
         # Itérer les dates entre start_day et end_day s'il y a des salariés
         while current_date < end_day:
             
-            for id_employee in id_list:
-
+            for row in activity_list:
+            
                 # Cela donne un décimal aléatoire entre 0 et 1
                 activity_random_score = random.random()
 
@@ -192,7 +192,9 @@ def sport_activity_generator() -> List[Dict[str, str]]:
                 # Si le type de sport est bien dans la liste des sport, on ajoute les informations de l'activité dans la liste
                 if sport_type:
                     sport_list.append((
-                        id_employee,  
+                        row[0],  
+                        row[1],
+                        row[2],
                         start_time.strftime('%Y-%m-%d %H:%M:%S'),
                         sport_type, 
                         distance,

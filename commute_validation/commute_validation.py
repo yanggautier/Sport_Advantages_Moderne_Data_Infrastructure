@@ -17,7 +17,7 @@ TRANSPORT_LIMITS = {
     "Vélo/Trottinette/Autres": 25000  # 25 km en mètres
 }
 
-def get_distance(origin:str, destination:str, mode:str="walking") -> Tuple[float, float]:
+def get_distance(origin:str, destination:str, mode:str="walking"):
     """
     Calcule la distance entre deux adresses en utilisant l'API Google Maps
     
@@ -48,6 +48,8 @@ def get_distance(origin:str, destination:str, mode:str="walking") -> Tuple[float
     # Exécution de la requête
     response = requests.get(url, params=params)
     data = response.json()
+    print("get_distance", data)
+
     
     # Extraction des résultats
     try:
@@ -60,7 +62,7 @@ def get_distance(origin:str, destination:str, mode:str="walking") -> Tuple[float
     
     
 
-def validate_commutes(employees_df) -> List[Dict[str, Any]]:
+def validate_commutes(employees_df):
     """
     Valide les déclarations de mode de transport des employés
     
@@ -92,6 +94,7 @@ def validate_commutes(employees_df) -> List[Dict[str, Any]]:
         # Calcul de la distance avec l'API Google Maps
         distance, duration = get_distance(address, COMPANY_ADDRESS, transport_mode)
         
+
         if distance is None:
             results.append({
                 'id_employee': employee_id,
@@ -142,6 +145,7 @@ def insert_validation_to_db(host, database, user, password, port):
     
     # Validation des trajets
     validations = validate_commutes(employees_df)
+    print(validations)
 
     # Définition de liste pour bulk insert
     insert_list = []

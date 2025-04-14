@@ -27,7 +27,7 @@ def get_employee_ids(host:str, database:str, user:str, password:str, port:int) -
         cursor = connection.cursor()
 
         # Requête pour récupérer s'il y a des données dans la table de validation
-        select_query = "SELECT id_employee FROM sport_advantages.employees"
+        select_query = "SELECT id_employee, first_name, last_name FROM sport_advantages.employees"
 
         # Exécuter la requête SELECT
         cursor.execute(select_query)
@@ -35,7 +35,7 @@ def get_employee_ids(host:str, database:str, user:str, password:str, port:int) -
         # Récupérer les données des requêtes
         result = cursor.fetchall()
 
-        return [row[0] for row in result]
+        return result
 
     except (Exception, psycopg2.Error) as error:
         print(f"Erreur de connection à la base de données: {error}")
@@ -116,7 +116,7 @@ def bulk_insert_sport_activities(list_data: List[Tuple], host: str, database:str
         cursor = connection.cursor()
 
         # Requête à exécuter
-        columns = "(id_employee, start_datetime, sport_type, distance, activity_duration, comment)"
+        columns = "(id_employee, first_name, last_name, start_datetime, sport_type, distance, activity_duration, comment)"
         query = f"INSERT INTO sport_advantages.sport_activities {columns} VALUES %s"
 
         # Exécuter la requête

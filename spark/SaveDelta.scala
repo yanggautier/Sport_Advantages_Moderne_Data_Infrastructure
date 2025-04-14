@@ -6,6 +6,7 @@ import io.delta.tables._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.DataFrame
 import java.net.URI
+import org.apache.hadoop.fs.{FileSystem, Path}
 
 println("=== Début d'initialisation de Delta Lake ===")
 
@@ -39,13 +40,20 @@ spark.conf.set("spark.hadoop.fs.s3a.endpoint.region", "us-east-1")
 // Définir votre bucket
 val bucketName = "delta-tables"
 
-
 // Dans le test d'écriture :
 val testPath = s"s3a://delta-tables/test-file.txt"
+val path = new Path(testPath)
+val fs = FileSystem.get(new URI(testPath), spark.sparkContext.hadoopConfiguration)
+  
 try {
-  println(s"Tentative d'écriture sur: $testPath")
-  spark.sparkContext.parallelize(Seq("test")).saveAsTextFile(testPath)
-  println("Écriture TEST réussie dans MinIO!")
+    if (!fs.exists(path)) {
+    println(s"Le fichier n'existe pas, création en cours: $testPath")
+    // Créer le fichier
+    spark.sparkContext.parallelize(Seq("test")).saveAsTextFile(testPath)
+    println("Écriture TEST réussie dans MinIO!")
+  } else {
+    println(s"Le fichier existe déjà: $testPath")
+  }
 } catch {
   case e: Exception => traceException(e, "ÉCHEC de l'écriture TEST")
 }
@@ -100,6 +108,7 @@ try {
     .option("subscribe", topicName)
     .option("startingOffsets", "earliest")
     .option("failOnDataLoss", "false") 
+    .option("kafka.group.id", "spark-delta-lake-group")
     .load()
   
   println("Lecteur de flux Redpanda créé avec succès")
