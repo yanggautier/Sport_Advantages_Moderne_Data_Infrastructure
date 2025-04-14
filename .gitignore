@@ -21,3 +21,4 @@ airflow/logs
 trino/plugins/trino-delta-lake-413.zip
 trino/plugins/delta/*
 *.jar
+superset/superset_data/
