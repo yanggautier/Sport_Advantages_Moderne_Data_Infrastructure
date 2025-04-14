@@ -38,6 +38,8 @@ CREATE TABLE sport_advantages.commute_validations(
 CREATE TABLE sport_advantages.sport_activities(
     id SERIAL PRIMARY KEY,
     id_employee INT NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
     start_datetime TIMESTAMP,
     sport_type VARCHAR(20),
     distance INT, 

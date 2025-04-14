@@ -291,7 +291,7 @@ services:
     environment:
       - KAFKA_SERVERS=redpanda:9092
       # - TOPIC_NAME=${DEBEZIUM_OFFSET_STORAGE_TOPIC}
-      - TOPIC_NAME=sport.sport_advantages.sport_activities
+      - TOPIC_NAME=${TOPIC_NAME}
       - DB_HOST=${SPORT_POSTGRES_HOST}
       - DB_USER=${SPORT_POSTGRES_USER}
       - DB_PASSWORD=${SPORT_POSTGRES_PASSWORD}
@@ -310,6 +310,21 @@ services:
     volumes:
       - ./spark:/scripts
       - delta_volume:/data
+    networks:
+      - sport_network
+
+  slack-notifier:
+    build:
+      context: ./slack_notifier
+      dockerfile: Dockerfile
+    container_name: sport-advantages-slack-notifier
+    volumes:
+      - ./slack_notifier:/app
+    environment:
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - KAFKA_TOPIC=sport.sport_advantages.sport_activities
+    depends_on:
+      - redpanda
     networks:
       - sport_network
 
@@ -411,8 +426,8 @@ services:
           --role Admin \
           --email admin@example.com
     restart: on-failure
-    mem_limit: 2 
-    cpus: 2.0  
+    mem_limit: 2g
+    cpus: 1.0  
     depends_on:
       - airflow-postgres
     networks:
