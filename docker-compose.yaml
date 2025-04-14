@@ -344,6 +344,10 @@ services:
       until (/usr/bin/mc config host add myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}) do sleep 1; done;
       /usr/bin/mc mb myminio/delta-tables --ignore-existing;
       /usr/bin/mc policy set public myminio/delta-tables;
+      mc mb myminio/delta-tables --ignore-existing;
+      mc policy set public myminio/delta-tables;
+      mc ls myminio/delta-tables;
+      echo 'MinIO initialization complete';
       exit 0;
       "
     networks:
@@ -407,7 +411,7 @@ services:
           --role Admin \
           --email admin@example.com
     restart: on-failure
-    mem_limit: 2g    
+    mem_limit: 2 
     cpus: 2.0  
     depends_on:
       - airflow-postgres
@@ -425,7 +429,7 @@ services:
       - "8100:8080"
     volumes:
       - ./trino/etc:/etc/trino
-      # - ./trino/plugin/delta:/usr/lib/trino/plugin/delta
+      - trino-metastore:/tmp/trino-metastore
     environment:
       - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
       - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
@@ -515,6 +519,7 @@ volumes:
   spark_master_data:
   delta_volume:
   superset_postgres_data:
+  trino-metastore:
 
 networks:
   sport_network:
