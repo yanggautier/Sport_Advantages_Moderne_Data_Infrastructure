@@ -14,6 +14,10 @@ x-airflow-common: &airflow-common
     - AIRFLOW_CONN_SPORT_ADVANTAGES_DB=postgresql://${SPORT_POSTGRES_USER}:${SPORT_POSTGRES_PASSWORD}@business-postgres:${SPORT_POSTGRES_INTERNAL_PORT}/${SPORT_POSTGRES_DB}
     - AIRFLOW_CONN_REDPANDA=kafka://redpanda:9092
     - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
+    - AIRFLOW__METRICS__STATSD_ON=True
+    - AIRFLOW__METRICS__STATSD_HOST=statsd
+    - AIRFLOW__METRICS__STATSD_PORT=8125
+    - AIRFLOW__METRICS__STATSD_PREFIX=airflow
     - MINIO_ROOT_USER=${MINIO_ROOT_USER}
     - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     - DB_HOST=${SPORT_POSTGRES_HOST}
@@ -526,6 +530,66 @@ services:
     networks:
       - sport_network
 
+  # Prometheus pour la collecte de métriques
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sport-advantages-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - cadvisor
+    networks:
+      - sport_network
+
+  # cAdvisor pour les métriques des conteneurs
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: sport-advantages-cadvisor
+    ports:
+      - "8082:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    privileged: true
+    networks:
+      - sport_network
+
+  # Grafana pour la visualisation
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sport-advantages-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+    networks:
+      - sport_network
+
+  statsd:
+    image: prom/statsd-exporter:latest
+    container_name: sport-advantages-statsd
+    ports:
+      - "9102:9102"
+      - "8125:8125/udp"
+    networks:
+      - sport_network
+
 volumes:
   business_postgres_data:
   airflow_postgres_data:
@@ -535,6 +599,8 @@ volumes:
   delta_volume:
   superset_postgres_data:
   trino-metastore:
+  grafana_data:
+
 
 networks:
   sport_network:
