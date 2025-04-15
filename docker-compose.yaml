@@ -534,6 +534,7 @@ services:
       - ./superset/superset_config.py:/app/superset/superset_config.py
       - ./superset/docker/docker-entrypoint.sh:/app/docker-entrypoint.sh
       - ./superset/docker-init.d:/app/docker-init.d
+      - ./superset/dashboards:/app/superset_home/dashboards
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
       interval: 30s
