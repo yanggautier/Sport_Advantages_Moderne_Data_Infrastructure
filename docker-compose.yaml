@@ -31,7 +31,6 @@ x-airflow-common: &airflow-common
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
-    - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
   depends_on:
     - airflow-postgres
     - spark-master
