@@ -14,6 +14,11 @@ x-airflow-common: &airflow-common
     - AIRFLOW_CONN_SPORT_ADVANTAGES_DB=postgresql://${SPORT_POSTGRES_USER}:${SPORT_POSTGRES_PASSWORD}@business-postgres:${SPORT_POSTGRES_INTERNAL_PORT}/${SPORT_POSTGRES_DB}
     - AIRFLOW_CONN_REDPANDA=kafka://redpanda:9092
     - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
+    - AIRFLOW__METRICS__STATSD_ON=True
+    - AIRFLOW__METRICS__STATSD_HOST=statsd
+    - AIRFLOW__METRICS__STATSD_PORT=8125
+    - AIRFLOW__METRICS__STATSD_PREFIX=airflow
+    - AIRFLOW_CONFIG=/opt/airflow/airflow.cfg
     - MINIO_ROOT_USER=${MINIO_ROOT_USER}
     - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     - DB_HOST=${SPORT_POSTGRES_HOST}
@@ -26,7 +31,7 @@ x-airflow-common: &airflow-common
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
-    - ./airflow/config:/opt/airflow/config
+    - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
   depends_on:
     - airflow-postgres
     - spark-master
@@ -239,8 +244,12 @@ services:
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
+      - SPARK_METRICS_ON=true
+      - SPARK_METRICS_CONF=/opt/bitnami/spark/conf/metrics.properties
+      - JAVA_TOOL_OPTIONS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=7203 -Dcom.sun.management.jmxremote.rmi.port=7203 -Djava.rmi.server.hostname=spark-master
     volumes:
       - spark_master_data:/recovery
+      - ./monitoring/spark/metrics.properties:/opt/bitnami/spark/conf/metrics.properties
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 10s
@@ -251,6 +260,7 @@ services:
     ports:
       - "8090:8080"
       - "7077:7077"
+      - "7203:7203"
     networks:
       - sport_network
    
@@ -273,8 +283,15 @@ services:
       - SPARK_RPC_ENCRYPTION_ENABLED=no           
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no 
       - SPARK_SSL_ENABLED=no 
+      - SPARK_METRICS_ON=true
+      - SPARK_METRICS_CONF=/opt/bitnami/spark/conf/metrics.properties
+      - JAVA_TOOL_OPTIONS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=7204 -Dcom.sun.management.jmxremote.rmi.port=7204 -Djava.rmi.server.hostname=spark-worker
+    volumes:
+      - ./monitoring/spark/metrics.properties:/opt/bitnami/spark/conf/metrics.properties
     mem_limit: 2g
     cpus: 2.0
+    ports:
+      - "7204:7204"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081"]
       interval: 30s
@@ -517,12 +534,124 @@ services:
       - ./superset/superset_config.py:/app/superset/superset_config.py
       - ./superset/docker/docker-entrypoint.sh:/app/docker-entrypoint.sh
       - ./superset/docker-init.d:/app/docker-init.d
+      - ./superset/dashboards:/app/superset_home/dashboards
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 60s
+    networks:
+      - sport_network
+
+  # Prometheus pour la collecte de métriques
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sport-advantages-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - cadvisor
+    networks:
+      - sport_network
+
+  # cAdvisor pour les métriques des conteneurs
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: sport-advantages-cadvisor
+    ports:
+      - "8082:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    privileged: true
+    networks:
+      - sport_network
+
+  # Grafana pour la visualisation
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sport-advantages-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/volume/data:/grafana
+      - ./monitoring/grafana/volume/datasources:/grafana/datasources
+      - ./monitoring/grafana/volume/dashboards:/grafana/dashboards
+      - ./monitoring/grafana/volume/provisioning:/grafana/provisioning
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+    networks:
+      - sport_network
+
+  # Pour les métriques Airflow
+  statsd:
+    image: prom/statsd-exporter:latest
+    container_name: sport-advantages-statsd
+    command: "--statsd.listen-udp=:8125 --web.listen-address=:9102"
+    ports:
+      - "9102:9102"
+      - "8125:8125/udp"
+    networks:
+      - sport_network
+
+
+  # Exporteur des métriques instance postgresql pour les données métier
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://${SPORT_POSTGRES_USER}:${SPORT_POSTGRES_PASSWORD}@business-postgres:5432/${SPORT_POSTGRES_DB}?sslmode=disable
+    ports:
+      - "9187:9187"
+    depends_on:
+      business-postgres:
+        condition: service_healthy
+    volumes:
+      - ./monitoring/postgres-exporter/postgres_exporter.yml:/postgres_exporter.yml
+    networks:
+      - sport_network
+
+  # Exporteur des métriques instance postgresql pour Airflow
+  postgres-airflow-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres-airflow-exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://airflow:airflow@airflow-postgres:5432/airflow?sslmode=disable
+    ports:
+      - "9188:9187" 
+    depends_on:
+      airflow-postgres:
+        condition: service_healthy
+    networks:
+      - sport_network
+
+  # Exporteur des métriques instance spark master et worker
+  spark-exporter:
+    image: bitnami/jmx-exporter:latest
+    container_name: sport-advantages-spark-exporter
+    ports:
+      - "9191:9191" 
+    command:
+      - "9191"
+      - "/etc/jmx_exporter/config.yaml"
+    volumes:
+      - ./monitoring/spark-jmx-config.yaml:/etc/jmx_exporter/config.yaml
     networks:
       - sport_network
 
@@ -535,6 +664,8 @@ volumes:
   delta_volume:
   superset_postgres_data:
   trino-metastore:
+  grafana_data:
+
 
 networks:
   sport_network:

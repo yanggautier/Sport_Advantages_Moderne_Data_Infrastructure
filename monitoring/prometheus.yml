@@ -1,0 +1,46 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'airflow'
+    static_configs:
+      - targets: ['statsd:9102']
+        labels:
+          service: 'airflow'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          instance: 'business-postgres'
+          job: 'postgres'
+  
+  - job_name: 'airflow-postgres'
+    static_configs:
+      - targets: ['postgres-airflow-exporter:9187']
+        labels:
+          service: 'airflow-postgres'
+
+  - job_name: 'spark-master'
+    static_configs:
+      - targets: ['spark-exporter:9191']
+        labels:
+          instance: 'spark-master'
+          service: 'spark'
+
+  - job_name: 'spark-worker'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['spark-exporter:9191']
+        labels:
+          instance: 'spark-worker'
+          service: 'spark'

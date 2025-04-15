@@ -16,13 +16,7 @@ Télécharger ces fichiers sur site de Maven, puis mettre dans le répertoire ./
 - `trino-delta-lake-413.jar`(https://mvnrepository.com/artifact/io.trino/trino-delta-lake/413) 
 
 
-Requête pour Trino
-
--- Show all available catalogs
-SHOW CATALOGS;
-
--- Show schemas in hive catalog
-SHOW SCHEMAS FROM hive;
+docker exec -it sport-advantages-trino trino
 
 -- Show schemas in delta catalog
 SHOW SCHEMAS FROM delta;
@@ -31,7 +25,16 @@ SHOW SCHEMAS FROM delta;
 CREATE SCHEMA IF NOT EXISTS delta.default;
 
 -- Register an existing Delta table
-CALL delta.system.register_table('default', 'sport_activities', 's3://delta-tables/your_table_path');
+CALL delta.system.register_table('default', 'sport_activities', 's3://delta-tables/tables/sport_activities');
 
 -- Query your Delta table
-SELECT * FROM delta.default.your_table LIMIT 10;
+SELECT * FROM delta.default.sport_activities LIMIT 10;
+
+
+# Ajout de connection de database dans Superset 
+trino://trino@trino:8080/delta
+
+
+## ID de Dashboard dans Grafana
+Dashboard ID 9628: PostgreSQL Database
+Dashboard ID 12485: PostgreSQL Exporter Dashboard
