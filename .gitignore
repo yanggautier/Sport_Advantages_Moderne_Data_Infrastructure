@@ -18,7 +18,7 @@ airflow/logs
 .scala-build
 .DS_Store
 *.pdf
-trino/plugins/trino-delta-lake-413.zip
-trino/plugins/delta/*
+trino/plugin/trino-delta-lake-413.jar
+trino/plugin/delta/*
 *.jar
 superset/superset_data/
