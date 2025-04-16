@@ -1,11 +1,10 @@
 ---
 startDelaySeconds: 0
-# hostPort: spark-master:7203
+# Choisissez une seule de ces options, pas les deux
+#hostPort: spark-master:7203
 jmxUrl: service:jmx:rmi:///jndi/rmi://spark-master:7203/jmxrmi
 ssl: false
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
 rules:
   - pattern: ".*"
-    name: "spark_$0"
-    attrNameSnakeCase: true
