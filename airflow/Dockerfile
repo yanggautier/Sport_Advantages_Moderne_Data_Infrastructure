@@ -33,7 +33,5 @@ USER airflow
 ENV PYSPARK_PYTHON=/usr/bin/python3
 ENV PYSPARK_DRIVER_PYTHON=python3
 
-COPY airflow.cfg /opt/airflow/airflow.cfg
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

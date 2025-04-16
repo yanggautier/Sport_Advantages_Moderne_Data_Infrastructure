@@ -28,9 +28,7 @@ x-airflow-common: &airflow-common
     - DB_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
     - GUNICORN_TIMEOUT=300
   volumes:
-    - ./airflow/dags:/opt/airflow/dags
-    - ./airflow/logs:/opt/airflow/logs
-    - ./airflow/plugins:/opt/airflow/plugins
+    - ./airflow/:/opt/airflow/
   depends_on:
     - airflow-postgres
     - spark-master
