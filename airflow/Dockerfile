@@ -9,6 +9,7 @@ RUN apt-get update && \
 
 # Créer un répertoire pour les JARs
 RUN mkdir -p /opt/airflow/jars
+RUN chmod -R 777 /opt/airflow/logs
 
 # Télécharger les JARs nécessaires
 RUN wget -q https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.901/aws-java-sdk-bundle-1.11.901.jar -O /opt/airflow/jars/aws-java-sdk-bundle-1.11.901.jar && \
@@ -32,6 +33,8 @@ USER airflow
 # Configurer les variables d'environnement
 ENV PYSPARK_PYTHON=/usr/bin/python3
 ENV PYSPARK_DRIVER_PYTHON=python3
+
+
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

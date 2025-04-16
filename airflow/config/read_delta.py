@@ -267,7 +267,6 @@ def main() -> None:
         # Transformer les données d'activités
         activity_transformed_df = transform_activity_data(activity_df)
         print("Données d'activités sportives agrégées")
-        activity_transformed_df.show(5)
         
         # Assurer la compatibilité des types pour les jointures
         employee_df, validation_df, activity_transformed_df = ensure_compatible_types(
@@ -277,12 +276,10 @@ def main() -> None:
         # Jointure de 2 DataFrame employees et commute_validations
         employee_join_validation_df = employee_df.join(validation_df, "id_employee")
         print("Données de jointure de table employés et validations")
-        employee_join_validation_df.show(5)
         
         # Jointure de DataFrame précédent avec le DataFrame des activités sportives
         final_df = employee_join_validation_df.join(activity_transformed_df, "id_employee", "left")
         print("Données finales après toutes les jointures")
-        final_df.show(5)
         
         # Sauvegarde de DataFrame final dans une table Delta
         save_to_delta(final_df, args.output_bucket)

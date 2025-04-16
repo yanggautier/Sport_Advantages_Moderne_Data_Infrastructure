@@ -28,7 +28,10 @@ x-airflow-common: &airflow-common
     - DB_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
     - GUNICORN_TIMEOUT=300
   volumes:
-    - ./airflow/:/opt/airflow/
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+    - ./airflow/config:/opt/airflow/config
   depends_on:
     - airflow-postgres
     - spark-master
@@ -241,16 +244,12 @@ services:
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
-      - SPARK_METRICS_ON=true
-      - SPARK_METRICS_CONF=/opt/bitnami/spark/conf/metrics.properties
-      - JAVA_TOOL_OPTIONS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=7203 -Dcom.sun.management.jmxremote.rmi.port=7203 -Djava.rmi.server.hostname=spark-master
     volumes:
       - spark_master_data:/recovery
-      - ./monitoring/spark/metrics.properties:/opt/bitnami/spark/conf/metrics.properties
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "curl", "-f", "http://localhost:8081/metrics/json"]
+      interval: 30s
+      timeout: 10s
       retries: 5
     mem_limit: 1g
     cpus: 1.0
@@ -280,11 +279,7 @@ services:
       - SPARK_RPC_ENCRYPTION_ENABLED=no           
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no 
       - SPARK_SSL_ENABLED=no 
-      - SPARK_METRICS_ON=true
-      - SPARK_METRICS_CONF=/opt/bitnami/spark/conf/metrics.properties
-      - JAVA_TOOL_OPTIONS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=7204 -Dcom.sun.management.jmxremote.rmi.port=7204 -Djava.rmi.server.hostname=spark-worker
-    volumes:
-      - ./monitoring/spark/metrics.properties:/opt/bitnami/spark/conf/metrics.properties
+      - SPARK_LOCAL_IP=spark-worker 
     mem_limit: 2g
     cpus: 2.0
     ports:
@@ -635,20 +630,6 @@ services:
     depends_on:
       airflow-postgres:
         condition: service_healthy
-    networks:
-      - sport_network
-
-  # Exporteur des métriques instance spark master et worker
-  spark-exporter:
-    image: bitnami/jmx-exporter:latest
-    container_name: sport-advantages-spark-exporter
-    ports:
-      - "9191:9191" 
-    command:
-      - "9191"
-      - "/etc/jmx_exporter/config.yaml"
-    volumes:
-      - ./monitoring/spark-jmx-config.yaml:/etc/jmx_exporter/config.yaml
     networks:
       - sport_network
 

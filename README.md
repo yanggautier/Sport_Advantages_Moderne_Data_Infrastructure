@@ -38,3 +38,7 @@ trino://trino@trino:8080/delta
 ## ID de Dashboard dans Grafana
 Dashboard ID 9628: PostgreSQL Database
 Dashboard ID 12485: PostgreSQL Exporter Dashboard
+
+
+
+pour connecter à la base de données métier: docker exec -it business-postgres psql -h localhost -p 5432 -U sportadvantagehr -d sportadvantages

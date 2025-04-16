@@ -3,9 +3,6 @@ import random
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 from sql_manipulation import get_employee_ids, bulk_insert_sport_activities, get_activitis_nb
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 DB_HOST = os.environ.get('DB_HOST', 'localhost')
@@ -151,17 +148,17 @@ def sport_activity_generator() -> List[Dict[str, str]]:
     start_day = today - timedelta(days=366)
     end_day = today - timedelta(days=1)
 
-    logger.info(f"Date de début {start_day.strftime('%d/%m/%Y %H:%M:%S')}")
-    logger.info(f"Date de fin {end_day.strftime('%d/%m/%Y %H:%M:%S')}")
+    print(f"Date de début {start_day.strftime('%d/%m/%Y %H:%M:%S')}")
+    print(f"Date de fin {end_day.strftime('%d/%m/%Y %H:%M:%S')}")
 
     # Récupérer la liste des salariés dans la base de données
     activity_list = get_employee_ids(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
     ids_nb = len(activity_list)
 
     if ids_nb:
-        logger.info(f'{len(activity_list)} salariés trouvés dans la base de données.')
+        print(f'{len(activity_list)} salariés trouvés dans la base de données.')
     else:
-        logger.error('Aucun salarié trouvé dans la base de données.')
+        print('Aucun salarié trouvé dans la base de données.')
 
     current_date = start_day
 
@@ -212,16 +209,12 @@ if  __name__ == "__main__":
 
     # Compter le nombre historique d'activité des salariés
     activities_nb = get_activitis_nb(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
+
+    # Générer une liste d'activité sport
+    sport_list = sport_activity_generator()
+    print(sport_list[:5])
+
+    # Insérer ces information dans la table d'activé de sport dans bdd
+    bulk_insert_sport_activities(list_data=sport_list, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
     
-    # S'il n'y aucune, on génère, pour chaque fois qu'on rédémarre Docker, qu'il ne génère pas à nouveau
-    if activities_nb == 0:
-
-        # Générer une liste d'activité sport
-        sport_list = sport_activity_generator()
-
-        # Insérer ces information dans la table d'activé de sport dans bdd
-        bulk_insert_sport_activities(list_data=sport_list, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
-        
-        logging.info(f"{len(sport_list)} activités sportives a été ajouté !")
-    else:
-        logging.warning("Des historiques d'activité sportive existent déjà !")
+    print(f"{len(sport_list)} activités sportives a été ajouté !")

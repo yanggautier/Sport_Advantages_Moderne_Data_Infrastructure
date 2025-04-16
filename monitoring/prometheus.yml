@@ -29,18 +29,3 @@ scrape_configs:
       - targets: ['postgres-airflow-exporter:9187']
         labels:
           service: 'airflow-postgres'
-
-  - job_name: 'spark-master'
-    static_configs:
-      - targets: ['spark-exporter:9191']
-        labels:
-          instance: 'spark-master'
-          service: 'spark'
-
-  - job_name: 'spark-worker'
-    metrics_path: '/metrics'
-    static_configs:
-      - targets: ['spark-exporter:9191']
-        labels:
-          instance: 'spark-worker'
-          service: 'spark'
