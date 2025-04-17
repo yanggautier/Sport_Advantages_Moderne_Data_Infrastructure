@@ -13,135 +13,25 @@ def create_spark_session() -> SparkSession:
     Returns:
         SparkSession: Session Spark configurée
     """
-
-    active_session = SparkSession.getActiveSession()
-    if active_session:
-        print("Utilisation de la session Spark existante")
-        return active_session
-    
-    # Définir les packages nécessaires
-    packages = [
-        "io.delta:delta-core_2.12:1.2.0",
-        "org.postgresql:postgresql:42.5.1",
-        "org.apache.hadoop:hadoop-aws:3.3.1",
-        "com.amazonaws:aws-java-sdk-bundle:1.11.1026"
-    ]
-    
-    # Construire la chaîne de packages
-    packages_str = ",".join(packages)
-    
-    # Construire la session Spark avec toutes les configurations nécessaires
-    builder = SparkSession.builder.appName("ReadDeltaLake") \
-        .config("spark.master", "spark://spark-master:7077") \
-        .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
-        .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-        .config("spark.hadoop.fs.s3a.access.key", os.environ.get("MINIO_ROOT_USER")) \
-        .config("spark.hadoop.fs.s3a.secret.key", os.environ.get("MINIO_ROOT_PASSWORD")) \
-        .config("spark.hadoop.fs.s3a.path.style.access", "true") \
-        .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .config("spark.jars.packages", packages_str) \
-        .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
-        .config("spark.hadoop.fs.s3a.impl.disable.cache", "true") \
-        .config("spark.hadoop.fs.s3a.committer.magic.enabled", "true")
-    
-    # Créer la session
-    spark = builder.getOrCreate()
+    spark = SparkSession.builder.appName("ReadDeltaLake") \
+            .config("spark.master", "spark://spark-master:7077") \
+            .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
+            .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+            .config("spark.hadoop.fs.s3a.access.key", os.environ.get("MINIO_ROOT_USER")) \
+            .config("spark.hadoop.fs.s3a.secret.key", os.environ.get("MINIO_ROOT_PASSWORD")) \
+            .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+            .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
+            .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+            .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
+            .config("spark.jars.packages", "io.delta:delta-core_2.12:1.2.0,org.postgresql:postgresql:42.5.1,org.apache.hadoop:hadoop-aws:3.3.1") \
+            .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
+            .config("spark.hadoop.fs.s3a.impl.disable.cache", "true") \
+            .getOrCreate()
 
     # Afficher la version de Spark pour le debug
     print(f"Version de Spark: {spark.version}")
     
     return spark
-
-
-def verify_minio_access(spark: SparkSession, bucket: str):
-    """Verify we can access MinIO using boto3 directly (bypassing Spark)"""
-    print(f"Vérification de l'accès au bucket {bucket}...")
-    try:
-        # Utiliser boto3 pour vérifier l'accès car c'est plus fiable que l'API Hadoop
-        endpoint_url = "http://minio:9000"
-        access_key = os.environ.get("MINIO_ROOT_USER")
-        secret_key = os.environ.get("MINIO_ROOT_PASSWORD")
-        
-        if not access_key or not secret_key:
-            print(f"⚠️ Variables d'environnement MINIO_ROOT_USER ou MINIO_ROOT_PASSWORD non définies")
-            return False
-        
-        s3_client = boto3.client(
-            's3',
-            endpoint_url=endpoint_url,
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key,
-            config=Config(signature_version='s3v4'),
-            region_name='us-east-1'
-        )
-        
-        # Vérifier si le bucket existe
-        s3_client.head_bucket(Bucket=bucket)
-        
-        # Lister quelques objets pour vérifier l'accès en lecture
-        response = s3_client.list_objects_v2(Bucket=bucket, MaxKeys=5)
-        
-        if 'Contents' in response:
-            print(f"✅ Accès au bucket {bucket} vérifié - {len(response['Contents'])} objets trouvés")
-        else:
-            print(f"✅ Accès au bucket {bucket} vérifié - le bucket est vide")
-        
-        return True
-    
-    except Exception as e:
-        print(f"❌ Échec de l'accès à MinIO via boto3: {e}")
-        return False
-
-
-def check_spark_s3_connectivity(spark: SparkSession):
-    """Vérifier la connectivité S3 de Spark avec un test simple"""
-    print("Test de la connectivité S3 de Spark...")
-    
-    try:
-        # Créer un petit DataFrame de test
-        test_df = spark.createDataFrame([
-            (1, "test_data")
-        ], ["id", "value"])
-        
-        # Essayer d'écrire en format parquet (plus simple que Delta)
-        test_path = "s3a://delta-tables/connectivity_test"
-        test_df.write.mode("overwrite").format("parquet").save(test_path)
-        
-        # Essayer de lire ce qu'on vient d'écrire
-        read_df = spark.read.format("parquet").load(test_path)
-        count = read_df.count()
-        
-        print(f"✅ Test de connectivité S3 réussi - {count} lignes lues")
-        return True
-    except Exception as e:
-        print(f"❌ Test de connectivité S3 échoué: {e}")
-        
-        # Informations de diagnostic supplémentaires
-        print("\nInformations de diagnostic:")
-        try:
-            config = spark.sparkContext._jsc.hadoopConfiguration()
-            s3a_impl = config.get("fs.s3a.impl")
-            endpoint = config.get("fs.s3a.endpoint")
-            access_key = "***" if config.get("fs.s3a.access.key") else "Non défini"
-            secret_key = "***" if config.get("fs.s3a.secret.key") else "Non défini"
-            
-            print(f"fs.s3a.impl: {s3a_impl}")
-            print(f"fs.s3a.endpoint: {endpoint}")
-            print(f"fs.s3a.access.key: {access_key}")
-            print(f"fs.s3a.secret.key: {secret_key}")
-            
-            # Vérifier les JARs
-            jars = list(spark.sparkContext._jsc.sc().listJars())
-            print(f"\nJARs chargés ({len(jars)}):")
-            aws_jars = [jar for jar in jars if "aws" in jar or "hadoop" in jar or "s3" in jar]
-            for jar in aws_jars:
-                print(f"  - {jar}")
-        except Exception as diag_e:
-            print(f"Erreur lors du diagnostic: {diag_e}")
-        
-        return False
 
 
 def read_delta_table(spark: SparkSession, bucket: str, table: str) -> DataFrame:
@@ -394,7 +284,22 @@ def save_to_delta(df: DataFrame, output_bucket: str, path_suffix: str = "joined_
         
         raise
 
+def verify_minio_access(spark: SparkSession, bucket: str):
+    """Verify we can access MinIO"""
+    try:
+        fs = spark._jvm.org.apache.hadoop.fs.FileSystem.get(
+            spark._jsc.hadoopConfiguration()
+        )
+        path = spark._jvm.org.apache.hadoop.fs.Path(f"s3a://{bucket}/")
+        if fs.exists(path):
+            print(f"✅ Access to bucket {bucket} verified")
+        else:
+            print(f"⚠️ Bucket {bucket} not found but MinIO access works")
+    except Exception as e:
+        print(f"❌ MinIO access failed: {e}")
+        raise
 
+    
 def main() -> None:
     """Fonction principale du script."""
     parser = argparse.ArgumentParser(description="Lecteur et analyseur de tables Delta")
@@ -403,37 +308,33 @@ def main() -> None:
     parser.add_argument("--output_bucket", required=True, help="Bucket de sortie pour les résultats")
     args = parser.parse_args()
 
-    print("=== Démarrage du script read_delta.py ===")
-
     # Créer la session Spark
     spark = create_spark_session()
 
     # S'assurer que les buckets d'entrée et de sortie existent
-    # Utiliser boto3 directement (plus fiable)
     ensure_bucket_exists(args.input_bucket)
     ensure_bucket_exists(args.output_bucket)
     
-    # Vérifier l'accès aux buckets avec boto3 - ne pas utiliser Spark pour cette vérification
+    # Vérifier l'accès aux buckets - mais ne pas faire échouer le script
     input_access_ok = verify_minio_access(spark, args.input_bucket)
     output_access_ok = verify_minio_access(spark, args.output_bucket)
     
     if input_access_ok and output_access_ok:
-        print("✅ Accès vérifié aux buckets d'entrée et de sortie via boto3")
+        print("✅ Accès vérifié aux buckets d'entrée et de sortie")
     else:
-        print("⚠️ Problèmes d'accès aux buckets via boto3, le script risque d'échouer")
-        
-    # Tester explicitement la connectivité S3 de Spark
-    s3_connectivity = check_spark_s3_connectivity(spark)
-    if not s3_connectivity:
-        print("⚠️ La connectivité S3 de Spark a échoué, mais on continue")
+        print("⚠️ Problèmes d'accès aux buckets, mais on continue")
 
     try:
+        # Ajouter une liste des fichiers JAR chargés à des fins de diagnostic
+        print("JARs disponibles:")
+        for jar in spark.sparkContext._jsc.sc().listJars():
+            print(f"  - {jar}")
+            
         # Afficher les propriétés Hadoop pour le diagnostic
-        print("\nConfiguration Hadoop pertinente:")
+        print("\nConfiguratiom Hadoop pertinente:")
         hadoop_conf = spark.sparkContext._jsc.hadoopConfiguration()
         properties = ["fs.s3a.impl", "fs.s3a.endpoint", "fs.s3a.access.key", 
-                     "fs.s3a.path.style.access", "fs.s3a.aws.credentials.provider",
-                     "fs.s3a.impl.disable.cache"]
+                     "fs.s3a.secret.key", "fs.s3a.path.style.access"]
         for prop in properties:
             print(f"  {prop}: {hadoop_conf.get(prop)}")
         
@@ -490,38 +391,6 @@ def main() -> None:
     except Exception as e:
         print(f"Erreur pendant l'exécution: {e}")
         raise
-        
-    print("=== Fin du script read_delta.py ===")
-
-
-
-import socket
-from pyspark.sql import SparkSession
-
-def main():
-    print("=== Démarrage du script de test ===")
-    
-    # Obtenir le nom d'hôte complet ou l'adresse IP
-    hostname = socket.gethostname()
-    
-    # Créer une session Spark avec l'URL correcte et l'adresse du driver spécifique
-    spark = SparkSession.builder \
-        .appName("TestConnection") \
-        .master("spark://spark-master:7077") \
-        .config("spark.driver.host", "airflow-scheduler") \
-        .config("spark.driver.bindAddress", "0.0.0.0") \
-        .getOrCreate()
-    
-    # Afficher les informations de debug
-    print(f"Version de Spark: {spark.version}")
-    print(f"Nom d'hôte utilisé: {hostname}")
-    print(f"Configuration du driver actuelle: {spark.conf.get('spark.driver.host')}")
-    
-    # Créer un DataFrame simple
-    df = spark.createDataFrame([("Test",)], ["col1"])
-    df.show()
-    
-    print("=== Fin du script de test ===")
 
 if __name__ == "__main__":
     main()

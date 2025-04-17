@@ -28,14 +28,11 @@ RUN wget -q https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-$
     mv /opt/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} /opt/spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 
-
 USER airflow
 
 # Configurer les variables d'environnement
 ENV PYSPARK_PYTHON=/usr/bin/python3
 ENV PYSPARK_DRIVER_PYTHON=python3
  
-COPY airflow.cfg /opt/airflow/airflow.cfg
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

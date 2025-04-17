@@ -271,7 +271,7 @@ services:
       - JAVA_TOOL_OPTIONS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=7204 -Dcom.sun.management.jmxremote.rmi.port=7204 -Djava.rmi.server.hostname=spark-worker
     volumes:
       - ./monitoring/spark/metrics.properties:/opt/bitnami/spark/conf/metrics.properties
-    mem_limit: 2g
+    mem_limit: 4g
     cpus: 2.0
     ports:
       - "7204:7204"
@@ -381,6 +381,8 @@ services:
         condition: service_completed_successfully
     ports:
       - "8081:8080"
+    mem_limit: 4g
+    cpus: 2.0
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
