@@ -14,7 +14,7 @@ default_args = {
 }
 
 dag = DAG(
-    'read_delta_lake_data',
+    'join_tables',
     default_args=default_args,
     description='Lit les données d\'activité sportive depuis Delta Lake',
     start_date=datetime(2025,4,8),
