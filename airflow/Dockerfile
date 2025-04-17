@@ -14,6 +14,7 @@ RUN mkdir -p /opt/airflow/jars
 RUN wget -q https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.901/aws-java-sdk-bundle-1.11.901.jar -O /opt/airflow/jars/aws-java-sdk-bundle-1.11.901.jar && \
     wget -q https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.1/hadoop-aws-3.3.1.jar -O /opt/airflow/jars/hadoop-aws-3.3.1.jar && \
     wget -q https://repo1.maven.org/maven2/io/delta/delta-core_2.12/1.2.0/delta-core_2.12-1.2.0.jar -O /opt/airflow/jars/delta-core_2.12-1.2.0.jar && \
+    # wget -q https://repo1.maven.org/maven2/io/trino/trino-delta-lake/413/trino-delta-lake-413.jar -O /opt/airflow/jars/trino-delta-lake-413.jar  && \
     wget -q https://repo1.maven.org/maven2/org/postgresql/postgresql/42.5.1/postgresql-42.5.1.jar -O /opt/airflow/jars/postgresql-42.5.1.jar
 
 # Définir les permissions appropriées
@@ -32,8 +33,6 @@ USER airflow
 # Configurer les variables d'environnement
 ENV PYSPARK_PYTHON=/usr/bin/python3
 ENV PYSPARK_DRIVER_PYTHON=python3
-
-COPY airflow.cfg /opt/airflow/airflow.cfg
-
+ 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

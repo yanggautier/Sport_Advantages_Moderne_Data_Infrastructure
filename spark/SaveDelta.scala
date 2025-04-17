@@ -169,29 +169,79 @@ try {
   
   // Surveiller périodiquement l'état du flux
   var isRunning = true
+  var totalProcessedRows = 0L
+  var batchCount = 0
+  var lastBatchTimestamp = ""
+
   while (isRunning) {
     try {
       println(s"\n=== Stream Status at ${java.time.LocalDateTime.now()} ===")
       println(s"Status: ${query.status}")
+      
       if (query.recentProgress.nonEmpty) {
         val lastProgress = query.recentProgress.last
-        println(s"Last progress: ${lastProgress}")
-        println(s"Number of input rows: ${lastProgress.numInputRows}")
-        println(s"Sink description: ${lastProgress.sink}")
+        val currentBatchRows = lastProgress.numInputRows
+        
+        // Éviter de compter deux fois le même batch
+        val currentTimestamp = lastProgress.timestamp
+        if (currentTimestamp != lastBatchTimestamp) {
+          // Mettre à jour les compteurs uniquement s'il s'agit d'un nouveau batch
+          totalProcessedRows += currentBatchRows
+          batchCount += 1
+          lastBatchTimestamp = currentTimestamp
+          
+          // Afficher les statistiques de transactions
+          println(s"Transactions dans ce batch: ${currentBatchRows}")
+          println(s"Total des transactions traitées: ${totalProcessedRows}")
+          println(s"Nombre de batches traités: ${batchCount}")
+          
+          if (batchCount > 0) {
+            println(s"Débit moyen (lignes/batch): ${totalProcessedRows.toDouble / batchCount}")
+            println(s"Débit d'entrée: ${lastProgress.inputRowsPerSecond} lignes/sec")
+            println(s"Débit de traitement: ${lastProgress.processedRowsPerSecond} lignes/sec")
+          }
+        }
       } else {
         println("Aucun événement de progression pour le moment")
       }
       
-      // Vérifier les données dans la table Delta
+      // Vérifier les données dans la table Delta (votre code existant)
       try {
         val checkData = spark.read.format("delta").load(s"s3a://$bucketName/tables/sport_activities")
-        println(s"Nombre d'enregistrements actuels dans la table Delta: ${checkData.count()}")
-        if (checkData.count() > 0) {
+        val recordCount = checkData.count()
+        println(s"Nombre d'enregistrements actuels dans la table Delta: ${recordCount}")
+        
+        // Si les chiffres ne correspondent pas, expliquer pourquoi
+        if (recordCount != totalProcessedRows) {
+          println(s"Note: La différence entre les transactions traitées (${totalProcessedRows}) et les enregistrements en base (${recordCount}) peut être due à:")
+          println("- Des transactions en attente d'écriture")
+          println("- Des données préexistantes dans la table")
+          println("- Des opérations de nettoyage ou de déduplication")
+        }
+        
+        if (recordCount > 0) {
           println("Exemple de données de la table Delta:")
           checkData.show(5, false)
         }
       } catch {
         case e: Exception => println(s"La table Delta n'est pas encore interrogeable: ${e.getMessage}")
+      }
+      
+      // Ajouter des métriques plus détaillées par type d'activité
+      try {
+        val deltaTable = spark.read.format("delta").load(s"s3a://$bucketName/tables/sport_activities")
+        deltaTable.createOrReplaceTempView("sport_activities")
+        
+        println("\n=== Répartition des transactions par type de sport ===")
+        spark.sql("""
+          SELECT sport_type, COUNT(*) as count 
+          FROM sport_activities 
+          GROUP BY sport_type 
+          ORDER BY count DESC
+          LIMIT 5
+        """).show()
+      } catch {
+        case e: Exception => println("Analyse par type de sport pas encore disponible")
       }
       
       Thread.sleep(30000)  // 30 secondes
@@ -211,3 +261,4 @@ try {
     traceException(e, "Error in streaming process")
     println("Script completed with errors")
 }
+

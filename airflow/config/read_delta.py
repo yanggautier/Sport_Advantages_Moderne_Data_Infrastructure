@@ -257,6 +257,8 @@ def main() -> None:
         # Lire les données de HR
         employee_df = read_sql_table(spark, "sport_advantages.employees_masked")
         print("Schéma des données salariés")
+
+        employee_df = employee_df.select(employee_df["id_employee"], employee_df["gross_salary"],employee_df["business_unity"],employee_df["constract_type"])
         employee_df.printSchema()
         
         # Lire les données de validation de déplacement
