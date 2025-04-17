@@ -18,7 +18,7 @@ default_args = {
 
 # Définir le DAG
 dag = DAG(
-    'process_data_without_spark',
+    'without_spark_test',
     default_args=default_args,
     description='Traite les données sans utiliser Spark',
     start_date=datetime(2025, 4, 8),

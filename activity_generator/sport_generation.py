@@ -214,14 +214,14 @@ if  __name__ == "__main__":
     activities_nb = get_activitis_nb(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
     
     # S'il n'y aucune, on génère, pour chaque fois qu'on rédémarre Docker, qu'il ne génère pas à nouveau
-    if activities_nb == 0:
+    #if activities_nb == 0:
 
-        # Générer une liste d'activité sport
-        sport_list = sport_activity_generator()
+    # Générer une liste d'activité sport
+    sport_list = sport_activity_generator()
 
-        # Insérer ces information dans la table d'activé de sport dans bdd
-        bulk_insert_sport_activities(list_data=sport_list, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
-        
-        logging.info(f"{len(sport_list)} activités sportives a été ajouté !")
-    else:
-        logging.warning("Des historiques d'activité sportive existent déjà !")
+    # Insérer ces information dans la table d'activé de sport dans bdd
+    bulk_insert_sport_activities(list_data=sport_list, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD, port=DB_PORT)
+    
+    logging.info(f"{len(sport_list)} activités sportives a été ajouté !")
+    #else:
+    #    logging.warning("Des historiques d'activité sportive existent déjà !")

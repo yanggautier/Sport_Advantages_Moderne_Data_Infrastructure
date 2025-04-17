@@ -14,7 +14,7 @@ default_args = {
 }
 
 dag = DAG(
-    'join_all_tables',
+    'read_delta_lake_data',
     default_args=default_args,
     description='Lit les données d\'activité sportive depuis Delta Lake',
     start_date=datetime(2025,4,8),
@@ -25,7 +25,7 @@ dag = DAG(
 
 # Utiliser SparkSubmitOperator pour soumettre un job Spark qui lit les données Delta
 read_delta_task = SparkSubmitOperator(
-    task_id='join-tables',
+    task_id='read_delta_data',
     application='/opt/airflow/config/read_delta.py',
     conn_id='spark_default',
     application_args=[
