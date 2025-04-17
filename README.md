@@ -268,14 +268,13 @@ Trino permet d'interroger les données stockées dans Delta Lake et PostgreSQL a
 ### Visualisation avec Superset
 
 Superset fournit des dashboards interactifs permettant d'analyser :
-- La participation aux activités sportives par département
 - Le calcul des primes de transport écologique
 - Les métriques de performance sportive
 - L'impact financier du programme d'avantages
 
 ### Notifications avec Slack
 
-Le service `slack_notifier` envoie des notifications sur Slack lorsque des événements importants se produisent, comme l'insertion de nouvelles activités sportives ou le calcul des primes.
+Le service `slack_notifier` envoie des notifications sur Slack lorsque qu'on reçoit des activités sportives avec des commentaire avec des commentaire.
 
 ## Dépannage
 
