@@ -16,38 +16,39 @@ def create_spark_session() -> SparkSession:
     spark = SparkSession.builder.appName("JoinDeltaWithSQL") \
             .config("spark.master", "spark://spark-master:7077")  \
             .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
+            .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
             .config("spark.hadoop.fs.s3a.access.key", os.environ.get("MINIO_ROOT_USER"))  \
             .config("spark.hadoop.fs.s3a.secret.key", os.environ.get("MINIO_ROOT_PASSWORD")) \
             .config("spark.hadoop.fs.s3a.path.style.access", "true") \
             .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
-            .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
             .config("spark.jars.packages", "org.postgresql:postgresql:42.5.1") \
+            .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
+            .config("spark.hadoop.fs.s3a.impl.disable.cache", "false") \
             .getOrCreate()
 
     # Afficher la version de Spark pour le debug
     print(f"Version de Spark: {spark.version}")
 
+    # Explicitly set the default filesystem
+    spark.sparkContext._jsc.hadoopConfiguration().set("fs.defaultFS", "s3a://delta-tables")
+
     return spark
 
 
 def read_delta_table(spark: SparkSession, bucket: str, table: str) -> DataFrame:
-    """Lire les données de table Delta depuis MinIO
-    
-    Args: 
-        spark (SparkSession): Session de spark
-        bucket (str): Nom de bucket dans MinIO
-        table (str): Nom de table Delta
-        
-    Returns:
-        DataFrame: DataFrame Spark contenant les données lues
-        
-    Raises:
-        Exception: Si la lecture de la table échoue
-    """
+    """Lire les données de table Delta depuis MinIO"""
     path = f"s3a://{bucket}/tables/{table}"
     print(f"Lecture de la table Delta depuis: {path}")
 
     try:
+        # First verify the table exists
+        fs = spark._jvm.org.apache.hadoop.fs.FileSystem.get(
+            spark._jsc.hadoopConfiguration()
+        )
+        delta_log_path = f"{path}/_delta_log"
+        if not fs.exists(spark._jvm.org.apache.hadoop.fs.Path(delta_log_path)):
+            raise FileNotFoundError(f"Delta table does not exist at {path}")
+            
         df = spark.read.format("delta").load(path)
         print(f"Nombre de lignes lues: {df.count()}")
         return df
@@ -230,6 +231,61 @@ def save_to_delta(df: DataFrame, output_bucket: str, path_suffix: str = "joined_
         
         raise
 
+def verify_minio_access(spark: SparkSession, bucket: str):
+    """Verify we can access MinIO"""
+    try:
+        fs = spark._jvm.org.apache.hadoop.fs.FileSystem.get(
+            spark._jsc.hadoopConfiguration()
+        )
+        path = spark._jvm.org.apache.hadoop.fs.Path(f"s3a://{bucket}/")
+        if fs.exists(path):
+            print(f"✅ Access to bucket {bucket} verified")
+        else:
+            print(f"⚠️ Bucket {bucket} not found but MinIO access works")
+    except Exception as e:
+        print(f"❌ MinIO access failed: {e}")
+        raise
+
+def verify_filesystem_config(spark: SparkSession):
+    """Verify the filesystem configuration is correct"""
+    hadoop_conf = spark.sparkContext._jsc.hadoopConfiguration()
+    
+    print("\nFilesystem Configuration:")
+    print(f"fs.defaultFS: {hadoop_conf.get('fs.defaultFS')}")
+    print(f"fs.s3a.impl: {hadoop_conf.get('fs.s3a.impl')}")
+    print(f"fs.s3a.endpoint: {hadoop_conf.get('fs.s3a.endpoint')}")
+    
+    # Test filesystem access
+    try:
+        fs = spark._jvm.org.apache.hadoop.fs.FileSystem.get(hadoop_conf)
+        test_path = spark._jvm.org.apache.hadoop.fs.Path("s3a://delta-tables/test")
+        if fs.exists(test_path):
+            print("✅ Successfully accessed S3A filesystem")
+        else:
+            print("⚠️ S3A filesystem accessible but path doesn't exist")
+    except Exception as e:
+        print(f"❌ Filesystem access failed: {e}")
+        raise
+
+def check_network_connectivity():
+    """Verify network connectivity to MinIO"""
+    import socket
+    import urllib.request
+    
+    minio_host = "minio"
+    minio_port = 9000
+    
+    try:
+        # Check DNS resolution
+        socket.gethostbyname(minio_host)
+        print(f"✅ DNS resolution for {minio_host} successful")
+        
+        # Check TCP connection
+        with socket.create_connection((minio_host, minio_port), timeout=5):
+            print(f"✅ TCP connection to {minio_host}:{minio_port} successful")
+    except Exception as e:
+        print(f"❌ Network connectivity check failed: {e}")
+        raise
 
 def main() -> None:
     """Fonction principale du script."""
@@ -242,10 +298,18 @@ def main() -> None:
     # Créer la session Spark
     spark = create_spark_session()
 
+    # Debug step 1: Verify filesystem config
+    verify_filesystem_config(spark)
+
     # S'assurer que les buckets d'entrée et de sortie existent
     ensure_bucket_exists(args.input_bucket)
     ensure_bucket_exists(args.output_bucket)
     
+    verify_minio_access(spark,args.input_bucket)
+    verify_minio_access(spark,args.output_bucket) 
+
+    check_network_connectivity()
+
     try:
         # Lire des données des activités sportives
         activity_df = read_delta_table(spark, args.input_bucket, args.table)

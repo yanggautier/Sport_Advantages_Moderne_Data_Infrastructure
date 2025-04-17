@@ -28,6 +28,7 @@ x-airflow-common: &airflow-common
     - DB_PORT=${SPORT_POSTGRES_INTERNAL_PORT}
     - GUNICORN_TIMEOUT=300
   volumes:
+    - ./airflow/config:/opt/airflow/config
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
@@ -157,37 +158,20 @@ services:
       - STATUS_STORAGE_TOPIC=${DEBEZIUM_STATUS_STORAGE_TOPIC}
       - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - SPORT_POSTGRES_HOST=${SPORT_POSTGRES_HOST}
+      - SPORT_POSTGRES_PORT=${SPORT_POSTGRES_PORT}
+      - SPORT_POSTGRES_USER=${SPORT_POSTGRES_USER}
+      - SPORT_POSTGRES_PASSWORD=${SPORT_POSTGRES_PASSWORD}
+      - SPORT_POSTGRES_DB=${SPORT_POSTGRES_DB}
     healthcheck: 
       test: ["CMD-SHELL", "curl -f http://debezium:8083/connectors"]
       interval: 10s
       timeout: 5s
       retries: 15
       start_period: 30s
-    command: >
-      sh -c "
-        /docker-entrypoint.sh start &
-        for i in {1..10}; do
-          if curl -s -f http://localhost:8083/; then
-            curl -X POST http://localhost:8083/connectors -H 'Content-Type: application/json' -d '{
-              \"name\": \"sport-advantages-postgres-connector\",
-              \"config\": {
-                \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",
-                \"database.hostname\": \"business-postgres\",
-                \"database.port\": \"5432\",
-                \"database.user\": \"${SPORT_POSTGRES_USER}\",
-                \"database.password\": \"${SPORT_POSTGRES_PASSWORD}\",
-                \"database.dbname\": \"${SPORT_POSTGRES_DB}\",
-                \"database.server.name\": \"sport-advantages\",
-                \"table.include.list\": \"sport_advantages.sport_activities\",
-                \"plugin.name\": \"pgoutput\",
-                \"topic.prefix\": \"sport\",
-                \"snapshot.mode\": \"initial\"
-              }
-            }' && break;
-          fi
-          sleep $((2 * i)) # Backoff exponentiel (2, 4, 6,... secondes)
-        done
-        tail -f /dev/null"
+    volumes:
+      - ./debezium/init-debezium.sh:/init-debezium.sh
+    command: ["/init-debezium.sh"]
     networks:
       - sport_network
 
@@ -442,8 +426,8 @@ services:
           --role Admin \
           --email admin@example.com
     restart: on-failure
-    mem_limit: 2g
-    cpus: 1.0  
+    mem_limit: 4g
+    cpus: 2.0  
     depends_on:
       - airflow-postgres
     networks:
@@ -640,19 +624,6 @@ services:
     networks:
       - sport_network
 
-  # Exporteur des métriques instance spark master et worker
-  spark-exporter:
-    image: bitnami/jmx-exporter:latest
-    container_name: sport-advantages-spark-exporter
-    ports:
-      - "9191:9191" 
-    command:
-      - "9191"
-      - "/etc/jmx_exporter/config.yaml"
-    volumes:
-      - ./monitoring/spark-jmx-config.yaml:/etc/jmx_exporter/config.yaml
-    networks:
-      - sport_network
 
 volumes:
   business_postgres_data:
